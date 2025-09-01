@@ -1,5 +1,11 @@
 import re
+import sys
+import os
 from typing import Any
+
+# إعداد الترميز للنصوص العربية
+if sys.platform.startswith('win'):
+    os.system('chcp 65001 > nul')  # تعيين UTF-8 code page
 
 from azure.core.credentials import AzureKeyCredential
 from azure.identity import DefaultAzureCredential
@@ -7,21 +13,73 @@ from azure.search.documents.aio import SearchClient
 from azure.search.documents.models import VectorizableTextQuery
 
 from rtmt import RTMiddleTier, Tool, ToolResult, ToolResultDirection
+from order_manager import order_manager, OrderItem
+
+def format_arabic_text(text):
+    """تنسيق النص العربي للعرض الصحيح في التيرمينال"""
+    try:
+        # علامات Unicode للتحكم في الاتجاه
+        rtl_mark = '\u202E'  # Right-to-Left Override
+        pop_mark = '\u202C'  # Pop Directional Formatting
+        
+        # تطبيق الاتجاه الصحيح للنص العربي
+        formatted_text = f"{rtl_mark}{text}{pop_mark}"
+        return formatted_text
+    except:
+        return text
 
 _search_tool_schema = {
     "type": "function",
     "name": "search",
-    "description": "البحث في قاعدة المعرفة. قاعدة المعرفة باللغة العربية، ابحث مباشرة بالعربية. " + \
-                   "النتائج تظهر كـ: [ID] اسم المنتج - المكونات (السعر جنيه)",
+    "description": "البحث في قاعدة المعرفة واختياريا إضافة منتج للطلب. قاعدة المعرفة باللغة العربية، ابحث مباشرة بالعربية. " + \
+                   "النتائج تظهر كـ: [ID] اسم المنتج - المكونات (السعر جنيه).",
     "parameters": {
         "type": "object",
         "properties": {
             "query": {
                 "type": "string",
                 "description": "استعلام البحث باللغة العربية"
+            },
+            "add_to_order": {
+                "type": "boolean",
+                "description": "هل تريد إضافة المنتج الأول من نتائج البحث للطلب؟ استخدم true عندما يطلب العميل منتجاً",
+                "default": False
             }
         },
         "required": ["query"],
+        "additionalProperties": False
+    }
+}
+
+_get_order_summary_schema = {
+    "type": "function",
+    "name": "get_order_summary",
+    "description": "عرض ملخص الطلب الحالي مع الأسعار والمكونات. استخدم هذه الأداة عندما يريد العميل مراجعة طلبه.",
+    "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": False
+    }
+}
+
+_confirm_order_schema = {
+    "type": "function",
+    "name": "confirm_order", 
+    "description": "تأكيد الطلب النهائي. استخدم هذه الأداة عندما يؤكد العميل أن الطلب صحيح ولا يريد إضافة شيء آخر.",
+    "parameters": {
+        "type": "object",
+        "properties": {},
+        "additionalProperties": False
+    }
+}
+
+_clear_order_schema = {
+    "type": "function",
+    "name": "clear_order",
+    "description": "مسح الطلب الحالي. استخدم عندما يريد العميل البدء من جديد.",
+    "parameters": {
+        "type": "object",
+        "properties": {},
         "additionalProperties": False
     }
 }
@@ -67,8 +125,25 @@ async def _search_tool(
     args: Any) -> ToolResult:
     
     query = args["query"]
-    print(f"البحث عن '{query}' في قاعدة المعرفة العربية")
-    print(f"استخدام الحقول: ID={identifier_field}, Content={content_field}")
+    add_to_order = args.get("add_to_order", False)
+    
+    # طباعة بترميز صحيح للعربية مع دعم RTL
+    try:
+        # إضافة علامات Unicode للاتجاه الصحيح
+        rtl_mark = '\u202E'  # Right-to-Left Override
+        ltr_mark = '\u202D'  # Left-to-Right Override
+        pop_mark = '\u202C'  # Pop Directional Formatting
+        
+        # تنسيق النص مع الاتجاه الصحيح
+        search_text = f"🔍 البحث عن: '{query}'"
+        order_text = f"إضافة للطلب: {'نعم' if add_to_order else 'لا'}"
+        fields_text = f"📋 استخدام الحقول: ID={identifier_field}, Content={content_field}"
+        
+        print(f"{search_text} | {order_text}")
+        print(fields_text)
+    except UnicodeEncodeError:
+        print(f"Search for: '{query}' | Add to order: {add_to_order}")
+        print(f"Using fields: ID={identifier_field}, Content={content_field}")
     
     # بحث نصي بسيط في Azure AI Search مع دعم النص العربي
     search_results = await search_client.search(
@@ -81,9 +156,15 @@ async def _search_tool(
     
     result = ""
     result_count = 0
+    found_items = []  # لحفظ النتائج للاستخدام في الطلب
+    
     async for r in search_results:
         result_count += 1
-        print(f"نتيجة البحث {result_count}: {r}")
+        try:
+            result_text = format_arabic_text(f"📋 نتيجة {result_count}")
+            print(f"{result_text}: {r}")
+        except UnicodeEncodeError:
+            print(f"Result {result_count}: {r}")
         
         # استخدام الحقول الصحيحة
         id_field = r.get(identifier_field, f"Item_{result_count}")
@@ -91,13 +172,130 @@ async def _search_tool(
         content_field_value = r.get(content_field, "بدون وصف")
         price = r.get('Price', 'سعر غير محدد')
         
+        # حفظ بيانات المنتج للاستخدام في الطلب
+        item_data = {
+            'ID': id_field,
+            'Name': name_field,
+            'ingredients': content_field_value,
+            'Price': price
+        }
+        found_items.append(item_data)
+        
         # عرض النتائج بصيغة عربية واضحة
         result += f"🍽️ [{id_field}] {name_field}\n"
         result += f"المكونات: {content_field_value}\n"
         result += f"السعر: {price} جنيه\n-----\n"
     
     if result_count == 0:
-        print("لم توجد نتائج للبحث!")
+        try:
+            no_results_text = format_arabic_text("❌ لم توجد نتائج للبحث!")
+            print(no_results_text)
+        except UnicodeEncodeError:
+            print("No results found!")
+        
+        # إضافة اقتراحات إذا لم توجد نتائج
+        result = "عذراً، لم أجد هذا المنتج. جرب البحث عن:\n"
+        result += "🍕 بيتزا (فراخ، سي فود، كابوريا)\n"
+        result += "🍔 برجر (بيف، دجاج، تشيزي)\n"
+        result += "أو قل 'اعرض كل المنتجات'"
+        return ToolResult(result, ToolResultDirection.TO_SERVER)
+    else:
+        try:
+            found_text = format_arabic_text(f"✅ وجدت {result_count} نتائج")
+            print(found_text)
+        except UnicodeEncodeError:
+            print(f"Found {result_count} results")
+        
+        # إذا طُلب إضافة المنتج للطلب وتم العثور على نتائج
+        if add_to_order and found_items:
+            first_item = found_items[0]  # إضافة أول نتيجة
+            success, order_message = order_manager.add_item(first_item)
+            
+            if success:
+                # الحصول على ملخص الطلب المحدث
+                order_summary = order_manager.get_order_summary()
+                
+                result += f"\n✅ {order_message}\n\n"
+                result += f"📋 الطلب الحالي ({order_summary['total_items']} قطعة):\n"
+                for item in order_summary['items']:
+                    result += f"• {item['quantity']}x {item['name']} - {item['price']} ج\n"
+                result += f"\n💰 الإجمالي: {order_summary['total_price']} جنيه"
+                
+                # إرسال بيانات الطلب للواجهة الأمامية
+                order_response = {
+                    "action": "order_updated",
+                    "message": order_message,
+                    "order_summary": order_summary,
+                    "order_table": order_summary["table_html"]
+                }
+                
+                return ToolResult(result, ToolResultDirection.TO_CLIENT)
+            else:
+                result += f"\n❌ {order_message}"
+        else:
+            # مجرد عرض النتائج بدون إضافة للطلب
+            result += f"\n💡 لطلب أي منتج، قل: 'أريد [اسم المنتج]'"
+    
+    return ToolResult(result, ToolResultDirection.TO_SERVER)
+
+async def _get_order_summary_tool(args: Any) -> ToolResult:
+    """عرض ملخص الطلب الحالي"""
+    try:
+        order_summary = order_manager.get_order_summary()
+        
+        if order_summary['total_items'] == 0:
+            return ToolResult("الطلب فارغ حالياً", ToolResultDirection.TO_SERVER)
+        
+        # إرسال الملخص للواجهة الأمامية
+        response = {
+            "action": "show_order_summary",
+            "order_summary": order_summary,
+            "order_table": order_summary["table_html"]
+        }
+        
+        return ToolResult(order_summary['formatted_summary'], ToolResultDirection.TO_CLIENT)
+        
+    except Exception as e:
+        print(f"خطأ في عرض ملخص الطلب: {e}")
+        return ToolResult("خطأ في عرض ملخص الطلب", ToolResultDirection.TO_SERVER)
+
+async def _confirm_order_tool(args: Any) -> ToolResult:
+    """تأكيد الطلب النهائي"""
+    try:
+        success, confirmation_message, confirmed_order = order_manager.confirm_order()
+        
+        if success:
+            # إرسال تأكيد الطلب للواجهة الأمامية
+            response = {
+                "action": "order_confirmed",
+                "confirmation_message": confirmation_message,
+                "order_details": confirmed_order
+            }
+            
+            return ToolResult(confirmation_message, ToolResultDirection.TO_CLIENT)
+        else:
+            return ToolResult("لا يمكن تأكيد طلب فارغ", ToolResultDirection.TO_SERVER)
+            
+    except Exception as e:
+        print(f"خطأ في تأكيد الطلب: {e}")
+        return ToolResult("خطأ في تأكيد الطلب", ToolResultDirection.TO_SERVER)
+
+async def _clear_order_tool(args: Any) -> ToolResult:
+    """مسح الطلب الحالي"""
+    try:
+        message = order_manager.clear_order()
+        
+        # إرسال إشعار المسح للواجهة الأمامية
+        response = {
+            "action": "order_cleared",
+            "message": message
+        }
+        
+        return ToolResult("تم مسح الطلب", ToolResultDirection.TO_CLIENT)
+        
+    except Exception as e:
+        print(f"خطأ في مسح الطلب: {e}")
+        return ToolResult("خطأ في مسح الطلب", ToolResultDirection.TO_SERVER)
         # إضافة اقتراحات إذا لم توجد نتائج
         result = "عذراً، لم أجد هذا المنتج. جرب البحث عن:\n"
         result += "🍕 بيتزا (فراخ، سي فود، كابوريا)\n"
@@ -131,13 +329,13 @@ async def _report_grounding_tool(search_client: SearchClient, identifier_field: 
 async def _show_all_tool(search_client: SearchClient, identifier_field: str, content_field: str) -> ToolResult:
     print("عرض جميع المنتجات المتاحة")
     
-    # البحث عن جميع المنتجات
+    # البحث عن جميع المنتجات بدون ترتيب
     search_results = await search_client.search(
         search_text="*", 
         query_type="simple",
         top=50,  # عرض حتى 50 منتج
-        select=f"{identifier_field},Name,{content_field},Price",
-        order_by=["Name"]  # ترتيب حسب الاسم
+        select=f"{identifier_field},Name,{content_field},Price"
+        # إزالة order_by لأن حقل Name غير قابل للترتيب
     )
     
     result = "🍽️ **قائمة المطعم الكاملة** 🍽️\n\n"
@@ -202,6 +400,12 @@ def attach_rag_tools(rtmt: RTMiddleTier,
         credentials.get_token("https://search.azure.com/.default") # warm this up before we start getting requests
     search_client = SearchClient(search_endpoint, search_index, credentials, user_agent="RTMiddleTier")
 
+    # أدوات البحث الأساسية
     rtmt.tools["search"] = Tool(schema=_search_tool_schema, target=lambda args: _search_tool(search_client, semantic_configuration, identifier_field, content_field, embedding_field, use_vector_query, args))
     rtmt.tools["report_grounding"] = Tool(schema=_grounding_tool_schema, target=lambda args: _report_grounding_tool(search_client, identifier_field, title_field, content_field, args))
     rtmt.tools["show_all_items"] = Tool(schema=_show_all_tool_schema, target=lambda args: _show_all_tool(search_client, identifier_field, content_field))
+    
+    # أدوات إدارة الطلبات
+    rtmt.tools["get_order_summary"] = Tool(schema=_get_order_summary_schema, target=_get_order_summary_tool)
+    rtmt.tools["confirm_order"] = Tool(schema=_confirm_order_schema, target=_confirm_order_tool)
+    rtmt.tools["clear_order"] = Tool(schema=_clear_order_schema, target=_clear_order_tool)

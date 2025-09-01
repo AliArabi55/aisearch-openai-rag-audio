@@ -4,9 +4,13 @@ from dotenv import load_dotenv
 from azure.search.documents.aio import SearchClient
 from azure.core.credentials import AzureKeyCredential
 
-# تحديد مسار ملف .env
+# تحديد مسار ملف .env في نفس مجلد هذا الملف
 dotenv_path = os.path.join(os.path.dirname(__file__), '.env')
+print(f"البحث عن ملف .env في: {dotenv_path}")
 load_dotenv(dotenv_path)
+
+# محاولة أخرى - تحميل من المجلد الحالي أيضاً
+load_dotenv()
 
 async def test_specific_search():
     # تحقق من المتغيرات
@@ -76,8 +80,7 @@ async def test_specific_search():
             search_text="*",
             query_type="simple", 
             top=50,
-            select="ID,Name,ingredients,Price",
-            order_by=["ID"]
+            select="ID,Name,ingredients,Price"
         )
         
         print("📝 جميع البيانات في الفهرس:")

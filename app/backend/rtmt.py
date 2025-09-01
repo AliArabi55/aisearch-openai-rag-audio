@@ -146,9 +146,10 @@ class RTMiddleTier:
                         })
                     if "response" in message:
                         replace = False
-                        for i, output in enumerate(reversed(message["response"]["output"])):
-                            if output["type"] == "function_call":
-                                message["response"]["output"].pop(i)
+                        outputs = message["response"]["output"]
+                        for i in range(len(outputs) - 1, -1, -1):  # Iterate backwards to avoid index issues
+                            if outputs[i]["type"] == "function_call":
+                                outputs.pop(i)
                                 replace = True
                         if replace:
                             updated_message = json.dumps(message)                        

@@ -6,13 +6,14 @@ import { Button } from "@/components/ui/button";
 import { GroundingFiles } from "@/components/ui/grounding-files";
 import GroundingFileView from "@/components/ui/grounding-file-view";
 import StatusMessage from "@/components/ui/status-message";
+import OrderDisplay from "@/components/ui/order-display";
 
 import useRealTime from "@/hooks/useRealtime";
 import useAudioRecorder from "@/hooks/useAudioRecorder";
 import useAudioPlayer from "@/hooks/useAudioPlayer";
 import useAudioSequence from "@/hooks/useAudioSequence";
 
-import { GroundingFile, ToolResult } from "./types";
+import { GroundingFile, ToolResult, OrderItem } from "./types";
 
 import logo from "./assets/logo.svg";
 
@@ -21,6 +22,11 @@ function App() {
     const [isPlayingSequence, setIsPlayingSequence] = useState(false);
     const [groundingFiles, setGroundingFiles] = useState<GroundingFile[]>([]);
     const [selectedFile, setSelectedFile] = useState<GroundingFile | null>(null);
+    
+    // Order management state
+    const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
+    const [totalPrice, setTotalPrice] = useState(0);
+    const [showOrder, setShowOrder] = useState(false);
 
     const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
         onWebSocketOpen: () => console.log("WebSocket connection opened"),
@@ -35,13 +41,54 @@ function App() {
             stopAudioPlayer();
         },
         onReceivedExtensionMiddleTierToolResponse: message => {
-            const result: ToolResult = JSON.parse(message.tool_result);
+            try {
+                const result: ToolResult = JSON.parse(message.tool_result);
 
-            const files: GroundingFile[] = result.sources.map(x => {
-                return { id: x.chunk_id, name: x.title, content: x.chunk };
-            });
+                // Handle order management messages
+                if (result.action) {
+                    switch (result.action) {
+                        case "order_updated":
+                        case "show_order_summary":
+                            if (result.order_summary) {
+                                setOrderItems(result.order_summary.items);
+                                setTotalPrice(result.order_summary.total_price);
+                                setShowOrder(true);
+                            }
+                            break;
+                        case "order_confirmed":
+                            // Show confirmation and hide order after a delay
+                            setTimeout(() => {
+                                setShowOrder(false);
+                                setOrderItems([]);
+                                setTotalPrice(0);
+                            }, 5000);
+                            break;
+                        case "order_cleared":
+                            setShowOrder(false);
+                            setOrderItems([]);
+                            setTotalPrice(0);
+                            break;
+                    }
+                }
 
-            setGroundingFiles(prev => [...prev, ...files]);
+                // Handle grounding files (existing functionality)
+                if (result.sources) {
+                    const files: GroundingFile[] = result.sources.map(x => {
+                        return { id: x.chunk_id, name: x.title, content: x.chunk };
+                    });
+                    setGroundingFiles(prev => [...prev, ...files]);
+                }
+            } catch (error) {
+                console.error("Error parsing tool result:", error);
+                // Fallback for old format
+                const result: ToolResult = JSON.parse(message.tool_result);
+                if (result.sources) {
+                    const files: GroundingFile[] = result.sources.map(x => {
+                        return { id: x.chunk_id, name: x.title, content: x.chunk };
+                    });
+                    setGroundingFiles(prev => [...prev, ...files]);
+                }
+            }
         }
     });
 
@@ -139,6 +186,13 @@ function App() {
             </footer>
 
             <GroundingFileView groundingFile={selectedFile} onClosed={() => setSelectedFile(null)} />
+            
+            {/* Order Display */}
+            <OrderDisplay 
+                orderItems={orderItems} 
+                totalPrice={totalPrice} 
+                isVisible={showOrder} 
+            />
         </div>
     );
 }

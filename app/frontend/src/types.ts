@@ -4,6 +4,29 @@ export type GroundingFile = {
     content: string;
 };
 
+export type OrderItem = {
+    id: string;
+    name: string;
+    price: number;
+    ingredients: string;
+    quantity: number;
+};
+
+export type OrderSummary = {
+    items: OrderItem[];
+    total_items: number;
+    total_price: number;
+    formatted_summary: string;
+    table_html: string;
+};
+
+export type OrderToolResult = {
+    action: "order_updated" | "show_order_summary" | "order_confirmed" | "order_cleared";
+    message?: string;
+    order_summary?: OrderSummary;
+    order_table?: string;
+};
+
 export type HistoryItem = {
     id: string;
     transcript: string;
@@ -70,5 +93,5 @@ export type ExtensionMiddleTierToolResponse = {
 };
 
 export type ToolResult = {
-    sources: { chunk_id: string; title: string; chunk: string }[];
-};
+    sources?: { chunk_id: string; title: string; chunk: string }[];
+} & Partial<OrderToolResult>;
