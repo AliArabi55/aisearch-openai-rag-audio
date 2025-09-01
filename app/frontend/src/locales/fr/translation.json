@@ -1,13 +1,13 @@
 {
     "app": {
-        "title": "Parlez à vos données",
-        "footer": "Créée avec Azure AI Search + Azure OpenAI",
+        "title": "إطلب وجبتك الآن",
+        "footer": "Built by Naslst Team",
         "stopRecording": "Arrêter l'enregistrement",
         "startRecording": "Commencer l'enregistrement",
         "stopConversation": "Arrêter la conversation"
     },
     "status": {
-        "notRecordingMessage": "Posez des questions sur les avantages sociaux des employés de Contoso",
+        "notRecordingMessage": "أطلب طلبك الآن من مطعم Circles",
         "conversationInProgress": "Conversation en cours"
     },
     "history": {
