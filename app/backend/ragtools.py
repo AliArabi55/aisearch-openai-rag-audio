@@ -18,6 +18,7 @@ from order_manager import order_manager, OrderItem
 # استيراد نظام الترجمة
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
 from translation_utils import translate_and_extract_for_search
+from translation_settings import TranslationSettings
 
 _search_tool_schema = {
     "type": "function",
@@ -54,9 +55,13 @@ async def _search_tool(
     translation_result = translate_and_extract_for_search(query)
     
     print(f"🔍 البحث الأصلي: {translation_result['original']}")
-    print(f"� الترجمة الكاملة: {translation_result['full_translation']}")
-    print(f"🎯 كلمات البحث: {translation_result['search_query']}")
-    print(f"🔧 البحث الدلالي: {'مفعل' if semantic_configuration else 'معطل'}")
+    if translation_result['translation_enabled']:
+        print(f"🌍 الترجمة الكاملة: {translation_result['full_translation']}")
+        print(f"🎯 كلمات البحث: {translation_result['search_query']}")
+    else:
+        print(f"� نص البحث (عربي): {translation_result['search_query']}")
+    print(f"�🔧 البحث الدلالي: {'مفعل' if semantic_configuration else 'معطل'}")
+    print(f"⚙️ وضع الترجمة: {TranslationSettings.get_current_mode()}")
     
     # استخدام كلمات البحث المستخرجة
     search_query = translation_result['search_query']

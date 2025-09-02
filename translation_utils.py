@@ -1,4 +1,7 @@
 # قاموس الترجمة من العربية إلى الإنجليزية
+# استيراد إعدادات الترجمة
+from translation_settings import TranslationSettings
+
 ARABIC_TO_ENGLISH = {
     # أطباق رئيسية
     "برجر": "burger",
@@ -182,8 +185,13 @@ ARABIC_TO_ENGLISH = {
 }
 
 def translate_arabic_to_english(arabic_text):
-    """ترجمة النص العربي إلى إنجليزي باستخدام القاموس"""
+    """ترجمة النص العربي إلى إنجليزي باستخدام القاموس أو بدونه حسب الإعدادات"""
     import re
+    
+    # فحص إعدادات الترجمة
+    if not TranslationSettings.ENABLE_TRANSLATION:
+        # إرجاع النص العربي كما هو بدون ترجمة
+        return arabic_text
     
     # تحويل النص إلى أحرف صغيرة وإزالة علامات الترقيم
     arabic_text = arabic_text.strip().lower()
@@ -196,9 +204,10 @@ def translate_arabic_to_english(arabic_text):
         # إزالة علامات الترقيم من الكلمة
         clean_word = re.sub(r'[^\u0600-\u06FF\u0750-\u077F\u08A0-\u08FF\uFB50-\uFDFF\uFE70-\uFEFF]', '', word)
         
-        if clean_word in ARABIC_TO_ENGLISH:
+        if TranslationSettings.USE_DICTIONARY and clean_word in ARABIC_TO_ENGLISH:
+            # استخدام القاموس إذا كان مفعلاً
             translated_words.append(ARABIC_TO_ENGLISH[clean_word])
-        elif clean_word:  # إذا لم توجد الكلمة في القاموس، حولها إلى أحرف إنجليزية
+        elif clean_word:  # إذا لم توجد الكلمة في القاموس أو كان القاموس معطلاً
             # تحويل الكلمة العربية إلى أحرف إنجليزية
             transliterated = transliterate_arabic(clean_word)
             translated_words.append(transliterated)
@@ -234,6 +243,14 @@ def transliterate_arabic(arabic_word):
 def extract_food_keywords(translated_text):
     """استخراج كلمات الطعام فقط من النص المترجم للبحث"""
     import re
+    
+    # إذا كانت الترجمة معطلة، إرجاع النص كما هو
+    if not TranslationSettings.ENABLE_TRANSLATION:
+        return translated_text
+    
+    # إذا كان استخراج كلمات الطعام معطل، إرجاع النص كاملاً
+    if not TranslationSettings.EXTRACT_FOOD_KEYWORDS_ONLY:
+        return translated_text
     
     # كلمات الطعام والمكونات
     food_keywords = [
@@ -275,18 +292,27 @@ def extract_food_keywords(translated_text):
     return ' '.join(food_words) if food_words else translated_text
 
 def translate_and_extract_for_search(arabic_text):
-    """ترجمة كاملة + استخراج كلمات الطعام للبحث"""
+    """ترجمة كاملة + استخراج كلمات الطعام للبحث مع دعم الإعدادات"""
     
-    # الترجمة الكاملة
+    # الترجمة الكاملة (أو بدون ترجمة حسب الإعدادات)
     full_translation = translate_arabic_to_english(arabic_text)
     
-    # استخراج كلمات الطعام للبحث
+    # استخراج كلمات الطعام للبحث (أو استخدام النص كاملاً حسب الإعدادات)
     search_query = extract_food_keywords(full_translation)
+    
+    # طباعة معلومات التشخيص إذا كانت مفعلة
+    if TranslationSettings.SHOW_TRANSLATION_DEBUG:
+        print(f"🔧 وضع الترجمة: {TranslationSettings.get_current_mode()}")
+        print(f"📝 استخدام القاموس: {'مفعل' if TranslationSettings.USE_DICTIONARY else 'معطل'}")
+        print(f"🎯 استخراج كلمات الطعام: {'مفعل' if TranslationSettings.EXTRACT_FOOD_KEYWORDS_ONLY else 'معطل'}")
     
     return {
         'original': arabic_text,
         'full_translation': full_translation,
-        'search_query': search_query
+        'search_query': search_query,
+        'translation_enabled': TranslationSettings.ENABLE_TRANSLATION,
+        'dictionary_used': TranslationSettings.USE_DICTIONARY,
+        'food_keywords_only': TranslationSettings.EXTRACT_FOOD_KEYWORDS_ONLY
     }
 
 def search_with_translation(query):
