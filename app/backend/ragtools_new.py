@@ -17,7 +17,7 @@ from order_manager import order_manager, OrderItem
 
 # استيراد نظام الترجمة
 sys.path.append(os.path.join(os.path.dirname(__file__), '..', '..'))
-from translation_utils import translate_and_extract_for_search
+from translation_utils import translate_arabic_to_english
 
 _search_tool_schema = {
     "type": "function",
@@ -50,22 +50,18 @@ async def _search_tool(
     if not query:
         return ToolResult("❌ الرجاء إدخال كلمة للبحث", ToolResultDirection.TO_CLIENT)
     
-    # ترجمة الاستعلام والاستخراج
-    translation_result = translate_and_extract_for_search(query)
+    # ترجمة الاستعلام إلى الإنجليزية
+    english_query = translate_arabic_to_english(query)
     
-    print(f"🔍 البحث الأصلي: {translation_result['original']}")
-    print(f"� الترجمة الكاملة: {translation_result['full_translation']}")
-    print(f"🎯 كلمات البحث: {translation_result['search_query']}")
+    print(f"🔍 البحث الأصلي: {query}")
+    print(f"🔍 البحث المترجم: {english_query}")
     print(f"🔧 البحث الدلالي: {'مفعل' if semantic_configuration else 'معطل'}")
-    
-    # استخدام كلمات البحث المستخرجة
-    search_query = translation_result['search_query']
     
     try:
         # استخدام البحث الدلالي إذا كان متاحاً
         if semantic_configuration:
             search_results = await search_client.search(
-                search_text=search_query,
+                search_text=english_query,
                 query_type="semantic",
                 semantic_configuration_name=semantic_configuration,
                 top=5,
@@ -76,7 +72,7 @@ async def _search_tool(
             )
         else:
             search_results = await search_client.search(
-                search_text=search_query,
+                search_text=english_query,
                 query_type="simple",
                 top=5,
                 select=f"{identifier_field},Name,{content_field},Price",
@@ -111,8 +107,7 @@ async def _search_tool(
         
         # تنسيق النتائج للعرض
         result_text = f"🔍 نتائج البحث عن '{query}':\n"
-        result_text += f"📝 الترجمة الكاملة: '{translation_result['full_translation']}'\n"
-        result_text += f"🎯 كلمات البحث: '{search_query}'\n"
+        result_text += f"📝 البحث بالإنجليزية: '{english_query}'\n"
         result_text += f"🎯 تم العثور على {len(docs)} عنصر:\n\n"
         
         for i, doc in enumerate(docs, 1):

@@ -91,7 +91,7 @@ async def create_app():
         credentials=search_credential,
         search_endpoint=os.environ.get("AZURE_SEARCH_ENDPOINT"),
         search_index=os.environ.get("AZURE_SEARCH_INDEX"),
-        semantic_configuration=None,  # لا نستخدم البحث الدلالي
+        semantic_configuration=os.environ.get("AZURE_SEARCH_SEMANTIC_CONFIGURATION"),  # تفعيل البحث الدلالي
         identifier_field=os.environ.get("AZURE_SEARCH_IDENTIFIER_FIELD") or "ID",
         content_field=os.environ.get("AZURE_SEARCH_CONTENT_FIELD") or "ingredients",
         embedding_field="",  # لا نستخدم الـ embedding
