@@ -198,135 +198,63 @@ class OrderManager:
     def _create_order_table(self) -> str:
         """إنشاء جدول HTML للطلب"""
         if not self.current_order:
-            return "<div class='order-empty'>لا توجد طلبات</div>"
+            return """
+            <div style="text-align: center; padding: 30px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 15px; margin: 20px; color: white;">
+                <h3 style="margin: 0; font-size: 24px;">🍽️ لا توجد طلبات حالياً</h3>
+                <p style="margin: 10px 0 0 0; opacity: 0.9;">ابدأ طلبك الآن من مطعم سيركلز!</p>
+            </div>
+            """
         
         table_html = """
-        <div class="order-table-container">
-            <h3 class="order-title">🛒 الطلب الحالي</h3>
-            <table class="order-table">
-                <thead>
-                    <tr>
-                        <th>العدد</th>
-                        <th>اسم المنتج</th>
-                        <th>السعر</th>
-                        <th>المكونات</th>
-                        <th>الإجمالي</th>
-                    </tr>
-                </thead>
-                <tbody>
+        <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin: 20px; padding: 25px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
+            <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.3);">
+                <h2 style="color: white; margin: 0; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🍽️ Order your food now from Circles Restaurant</h2>
+                <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">استمتع بأشهى الأطباق من مطعم سيركلز</p>
+            </div>
+            <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
+                <table style="width: 100%; border-collapse: collapse; margin: 0;">
+                    <thead>
+                        <tr style="background: linear-gradient(135deg, #ff6b6b, #ee5a24); color: white;">
+                            <th style="padding: 18px 15px; text-align: right; font-size: 16px; font-weight: bold;">الصنف</th>
+                            <th style="padding: 18px 15px; text-align: center; font-size: 16px; font-weight: bold;">الكمية</th>
+                            <th style="padding: 18px 15px; text-align: center; font-size: 16px; font-weight: bold;">السعر</th>
+                        </tr>
+                    </thead>
+                    <tbody>
         """
         
-        total_price = 0
-        for item in self.current_order:
-            item_total = item.get_total_price()
-            total_price += item_total
-            
+        # إضافة كل صنف في الطلب
+        for i, item in enumerate(self.current_order):
+            bg_color = "#f8f9fa" if i % 2 == 0 else "#ffffff"
             table_html += f"""
-                    <tr>
-                        <td class="quantity">{item.quantity}</td>
-                        <td class="name">{item.name}</td>
-                        <td class="price">{item.price} ج</td>
-                        <td class="ingredients">{item.ingredients}</td>
-                        <td class="total">{item_total} ج</td>
+                    <tr style="background: {bg_color}; transition: all 0.3s ease;">
+                        <td style="padding: 18px 15px; text-align: right; font-weight: bold; color: #2c3e50; font-size: 16px; border-bottom: 1px solid #e9ecef;">{item.name}</td>
+                        <td style="padding: 18px 15px; text-align: center;">
+                            <span style="background: linear-gradient(135deg, #667eea, #764ba2); color: white; padding: 8px 15px; border-radius: 20px; font-weight: bold; font-size: 14px;">{item.quantity}</span>
+                        </td>
+                        <td style="padding: 18px 15px; text-align: center; color: #27ae60; font-weight: bold; font-size: 16px; border-bottom: 1px solid #e9ecef;">{item.get_total_price():.0f} ج</td>
                     </tr>
             """
         
+        total_price = sum(item.get_total_price() for item in self.current_order)
+        total_items = sum(item.quantity for item in self.current_order)
+        
         table_html += f"""
-                </tbody>
-                <tfoot>
-                    <tr class="total-row">
-                        <td colspan="4"><strong>الإجمالي</strong></td>
-                        <td class="total-price"><strong>{total_price} ج</strong></td>
-                    </tr>
-                </tfoot>
-            </table>
+                    </tbody>
+                    <tfoot>
+                        <tr style="background: linear-gradient(135deg, #2c3e50, #34495e); color: white;">
+                            <td style="padding: 25px 15px; text-align: right; font-size: 18px; font-weight: bold;">المجموع ({total_items} قطعة)</td>
+                            <td style="padding: 25px 15px; text-align: center; font-size: 18px; font-weight: bold;">🛒</td>
+                            <td style="padding: 25px 15px; text-align: center; font-size: 22px; font-weight: bold; color: #f39c12;">{total_price:.0f} جنيه</td>
+                        </tr>
+                    </tfoot>
+                </table>
+            </div>
+            <div style="text-align: center; margin-top: 25px; padding: 20px; background: rgba(255,255,255,0.1); border-radius: 15px; backdrop-filter: blur(10px);">
+                <p style="color: white; margin: 0; font-style: italic; font-size: 16px;">🕐 سيتم تحضير طلبك في خلال 20-30 دقيقة</p>
+                <p style="color: rgba(255,255,255,0.8); margin: 5px 0 0 0; font-size: 14px;">شكراً لاختيارك مطعم سيركلز</p>
+            </div>
         </div>
-        
-        <style>
-        .order-table-container {{
-            margin: 20px;
-            padding: 15px;
-            background: #f8f9fa;
-            border-radius: 10px;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-        }}
-        
-        .order-title {{
-            color: #2d5aa0;
-            text-align: center;
-            margin-bottom: 15px;
-            font-size: 1.2em;
-        }}
-        
-        .order-table {{
-            width: 100%;
-            border-collapse: collapse;
-            background: white;
-            border-radius: 8px;
-            overflow: hidden;
-        }}
-        
-        .order-table th {{
-            background: #2d5aa0;
-            color: white;
-            padding: 12px 8px;
-            text-align: center;
-            font-weight: bold;
-        }}
-        
-        .order-table td {{
-            padding: 10px 8px;
-            text-align: center;
-            border-bottom: 1px solid #eee;
-        }}
-        
-        .order-table tr:hover {{
-            background: #f5f5f5;
-        }}
-        
-        .quantity {{
-            background: #007bff;
-            color: white;
-            font-weight: bold;
-            border-radius: 15px;
-            width: 30px;
-        }}
-        
-        .name {{
-            font-weight: bold;
-            color: #333;
-            text-align: right;
-        }}
-        
-        .price, .total {{
-            font-weight: bold;
-            color: #28a745;
-        }}
-        
-        .ingredients {{
-            font-size: 0.9em;
-            color: #666;
-            text-align: right;
-            max-width: 200px;
-        }}
-        
-        .total-row {{
-            background: #28a745 !important;
-            color: white !important;
-        }}
-        
-        .total-row td {{
-            font-size: 1.1em;
-            font-weight: bold;
-        }}
-        
-        .order-empty {{
-            text-align: center;
-            color: #666;
-            font-style: italic;
-            padding: 20px;
-        }}
-        </style>
         """
         
         return table_html

@@ -22,7 +22,7 @@ function App() {
     const [isPlayingSequence, setIsPlayingSequence] = useState(false);
     const [groundingFiles, setGroundingFiles] = useState<GroundingFile[]>([]);
     const [selectedFile, setSelectedFile] = useState<GroundingFile | null>(null);
-    
+
     // Order management state
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [totalPrice, setTotalPrice] = useState(0);
@@ -99,13 +99,13 @@ function App() {
     const { playAudioSequence } = useAudioSequence({
         onSequenceComplete: async () => {
             // بعد انتهاء تسلسل الأصوات بالكامل، بدء الريل تايم
-            console.log('Audio sequence completed, starting realtime...');
+            console.log("Audio sequence completed, starting realtime...");
             setIsPlayingSequence(false);
             setIsRecording(true);
-            
+
             // بدء جلسة الريل تايم
             startSession();
-            
+
             // بدء تسجيل الصوت
             await startAudioRecording();
             resetAudioPlayer();
@@ -113,15 +113,15 @@ function App() {
     });
 
     const onToggleListening = async () => {
-        console.log('onToggleListening called. isRecording:', isRecording, 'isPlayingSequence:', isPlayingSequence);
-        
+        console.log("onToggleListening called. isRecording:", isRecording, "isPlayingSequence:", isPlayingSequence);
+
         if (!isRecording && !isPlayingSequence) {
             // بدء تسلسل الأصوات
-            console.log('Starting audio sequence...');
+            console.log("Starting audio sequence...");
             setIsPlayingSequence(true);
             playAudioSequence();
         } else if (isRecording) {
-            console.log('Stopping recording...');
+            console.log("Stopping recording...");
             await stopAudioRecording();
             stopAudioPlayer();
             inputAudioBufferClear();
@@ -144,20 +144,14 @@ function App() {
                     <Button
                         onClick={onToggleListening}
                         className={`h-12 w-60 ${
-                            isRecording 
-                                ? "bg-red-600 hover:bg-red-700" 
-                                : isPlayingSequence 
-                                    ? "bg-yellow-500 hover:bg-yellow-600" 
-                                    : "bg-purple-500 hover:bg-purple-600"
+                            isRecording
+                                ? "bg-red-600 hover:bg-red-700"
+                                : isPlayingSequence
+                                  ? "bg-yellow-500 hover:bg-yellow-600"
+                                  : "bg-purple-500 hover:bg-purple-600"
                         }`}
                         disabled={isPlayingSequence}
-                        aria-label={
-                            isRecording 
-                                ? t("app.stopRecording") 
-                                : isPlayingSequence 
-                                    ? "جاري التحضير..." 
-                                    : t("app.startRecording")
-                        }
+                        aria-label={isRecording ? t("app.stopRecording") : isPlayingSequence ? "جاري التحضير..." : t("app.startRecording")}
                     >
                         {isRecording ? (
                             <>
@@ -186,13 +180,9 @@ function App() {
             </footer>
 
             <GroundingFileView groundingFile={selectedFile} onClosed={() => setSelectedFile(null)} />
-            
+
             {/* Order Display */}
-            <OrderDisplay 
-                orderItems={orderItems} 
-                totalPrice={totalPrice} 
-                isVisible={showOrder} 
-            />
+            <OrderDisplay orderItems={orderItems} totalPrice={totalPrice} isVisible={showOrder} />
         </div>
     );
 }

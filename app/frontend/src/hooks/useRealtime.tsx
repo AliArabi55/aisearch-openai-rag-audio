@@ -57,15 +57,15 @@ export default function useRealTime({
 
     const { sendJsonMessage } = useWebSocket(wsEndpoint, {
         onOpen: () => {
-            console.log('WebSocket opened - but session not started yet');
+            console.log("WebSocket opened - but session not started yet");
             onWebSocketOpen?.();
         },
         onClose: () => {
-            console.log('WebSocket closed');
+            console.log("WebSocket closed");
             onWebSocketClose?.();
         },
         onError: event => {
-            console.error('WebSocket error:', event);
+            console.error("WebSocket error:", event);
             onWebSocketError?.(event);
         },
         onMessage: event => onMessageReceived(event),
@@ -73,7 +73,7 @@ export default function useRealTime({
     });
 
     const startSession = () => {
-        console.log('Starting realtime session...');
+        console.log("Starting realtime session...");
         const command: SessionUpdateCommand = {
             type: "session.update",
             session: {
@@ -89,7 +89,7 @@ export default function useRealTime({
             };
         }
 
-        console.log('Sending session update command:', command);
+        console.log("Sending session update command:", command);
         sendJsonMessage(command);
     };
 

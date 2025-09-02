@@ -1,5 +1,5 @@
-import React from 'react';
-import { OrderItem } from '../../types';
+import React from "react";
+import { OrderItem } from "../../types";
 
 interface OrderDisplayProps {
     orderItems: OrderItem[];
@@ -39,13 +39,17 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
                     </tbody>
                     <tfoot>
                         <tr className="total-row">
-                            <td colSpan={4}><strong>الإجمالي</strong></td>
-                            <td className="total-price"><strong>{totalPrice.toFixed(2)} ج</strong></td>
+                            <td colSpan={4}>
+                                <strong>الإجمالي</strong>
+                            </td>
+                            <td className="total-price">
+                                <strong>{totalPrice.toFixed(2)} ج</strong>
+                            </td>
                         </tr>
                     </tfoot>
                 </table>
             </div>
-            
+
             <style>{`
                 .order-display-container {
                     position: fixed;
