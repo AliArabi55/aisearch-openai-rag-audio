@@ -70,7 +70,7 @@ async def _search_tool(
                 semantic_configuration_name=semantic_configuration,
                 top=5,
                 select=f"{identifier_field},Name,{content_field},Price",
-                search_fields=f"Name,{content_field}",
+                search_fields=["Name", content_field],
                 query_caption="extractive",
                 query_answer="extractive"
             )
@@ -80,7 +80,7 @@ async def _search_tool(
                 query_type="simple",
                 top=5,
                 select=f"{identifier_field},Name,{content_field},Price",
-                search_fields=f"Name,{content_field}"
+                search_fields=["Name", content_field]
             )
         
         docs = []

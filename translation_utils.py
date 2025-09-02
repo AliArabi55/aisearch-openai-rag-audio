@@ -8,56 +8,124 @@ ARABIC_TO_ENGLISH = {
     "ساندوتش": "sandwich",
     "شوارما": "shawarma",
     
-    # أنواع اللحوم
-    "فراخ": "ferakh",
-    "دجاج": "ferakh",
+    # أنواع اللحوم والبروتين
+    "فراخ": "chicken",
+    "ferakh": "chicken",  # إضافة الترجمة العكسية
+    "دجاج": "chicken",
     "لحمة": "beef",
     "بيف": "beef",
     "لحم": "beef",
     "سلامي": "salami",
+    "سلامى": "salami",
     "بسطرمة": "pastirma",
+    "يسطرمه": "pastirma",
     "باكون": "bacon",
+    "بيكون": "bacon",
     "هوت دوج": "hot dog",
+    "هوت": "hot",
+    "دوج": "dog",
+    "جمبري": "shrimp",
+    "روبيان": "shrimp",
+    "سمك": "fish",
+    "تونة": "tuna",
+    "تونه": "tuna",
+    "سجق": "sausage",
+    "سجق بلدى": "local sausage",
+    "مفروم": "minced meat",
+    "سبيا": "cuttlefish",
+    "كابوريا": "crab",
+    "كافيار": "caviar",
+    "انشوجه": "anchovy",
+    "مشكل لحوم": "mixed meat",
     
     # الجبن والصوصات
     "جبن": "cheese",
     "جبنة": "cheese",
     "موزاريلا": "mozzarella",
+    "موتزريلا": "mozzarella",
+    "موتزاريلا": "mozzarella",
     "شيدر": "cheddar",
     "روكفور": "roquefort",
-    "رومي": "romi",
-    "كيري": "kiri",
-    "مايونيز": "mayonez",
+    "ريكفورد": "roquefort",
+    "رومي": "romi cheese",
+    "رومى": "romi cheese",
+    "كيري": "kiri cheese",
+    "مايونيز": "mayonnaise",
     "صوص": "sauce",
-    "صلصة": "salsa",
+    "صلصة": "sauce",
+    "صلصه": "sauce",
     "باربكيو": "barbecue",
     "رانش": "ranch",
     "شيلي": "chili",
+    "سويت شيلي": "sweet chili",
+    "كيري صوص": "kiri sauce",
+    "شيدر صوص": "cheddar sauce",
+    "صوص شيدر": "cheddar sauce",
+    "صوص سيركلز": "circles sauce",
+    "بيف شيلي صوص": "beef chili sauce",
+    "رانش صوص": "ranch sauce",
+    "صوص رانش": "ranch sauce",
+    "صوص باربكيو": "barbecue sauce",
+    "صوص سويت شيلي": "sweet chili sauce",
     
     # الخضروات والإضافات
-    "خس": "khas",
-    "خيار": "khyar",
-    "بصل": "basal",
-    "طماطم": "tamata",
-    "فلفل": "felfel",
-    "زيتون": "zatoon",
-    "أناناس": "ananas",
+    "خس": "lettuce",
+    "خص": "lettuce",
+    "خيار": "cucumber",
+    "خيار مخلل": "pickled cucumber",
+    "مخلل": "pickled",
+    "بصل": "onion",
+    "طماطم": "tomato",
+    "فلفل": "pepper",
+    "زيتون": "olives",
+    "أناناس": "pineapple",
+    "اناناس": "pineapple",
+    "شرائح اناناس": "pineapple slices",
     "مشروم": "mushroom",
+    "ماشروم": "mushroom",
     "فطر": "mushroom",
-    "هالابينو": "halapeno",
+    "هالابينو": "jalapeno",
+    "هالبينو": "jalapeno",
     "حلقات البصل": "onion rings",
     "اونيون رنجز": "onion rings",
+    "اونيون رينجز": "onion rings",
+    "اونيون رينج": "onion rings",
+    "موتزاريلا ستيكس": "mozzarella sticks",
+    "دوريتوس": "doritos",
     
     # أحجام ووصف
-    "كبير": "kbeer",
-    "صغير": "sagheer",
+    "كبير": "large",
+    "صغير": "small", 
+    "وسط": "medium",
+    "متوسط": "medium",
     "دبل": "double",
     "سنجل": "single",
-    "مشوي": "mashwi",
+    "مشوي": "grilled",
     "مقلي": "crispy",
     "كريسبي": "crispy",
-    "مدخن": "medakhan",
-    "مبشور": "mabshour",
+    "كرسبي": "crispy",
+    "كرسبى": "crispy",
+    "مدخن": "smoked",
+    "مبشور": "grated",
+    "تشيزي": "cheesy",
+    "تشيز": "cheese",
+    "امريكان": "american",
+    "أمريكان": "american",
+    "فايبس": "vibes",
+    "كريزي": "crazy",
+    "جوسي": "juicy",
+    "ديلايت": "delight",
+    "تيستي": "tasty",
+    "بلو": "blue",
+    "سبايسي": "spicy",
+    "زنجر": "zinger",
+    "مكسيكان": "mexican",
+    "سبيشيال": "special",
+    "مكس": "mix",
+    "سي فود": "seafood",
+    "فسفور": "phosphor",
+    "سي": "sea",
+    "فود": "food",
     
     # كلمات وصفية
     "لذيذ": "tasty",
@@ -84,6 +152,12 @@ ARABIC_TO_ENGLISH = {
     "حاجة": "something",
     "أكلة": "food",
     "طعام": "food",
+    "طبق": "plate",
+    "بطاطس": "potatoes",
+    "تشيلي": "chili",
+    "اونيون رينج": "onion rings",
+    "اونيون": "onion",
+    "رينج": "rings",
     
     # كلمات إضافية
     "مع": "with",
@@ -100,26 +174,9 @@ ARABIC_TO_ENGLISH = {
     "مشروم": "mushroom",
     "بالباكون": "with bacon",
     "والباكون": "and bacon",
-    "باكون": "bacon",
     "بالجبن": "with cheese",
     "والجبن": "and cheese",
-    "أمريكان": "american",
-    "امريكان": "american",
-    "أمريكي": "american",
-    "امريكي": "american",
     "دلالي": "semantic",
-    "فراخ": "ferakh",
-    "دجاج": "ferakh",
-    "لحمة": "beef",
-    "بيف": "beef",
-    "لحم": "beef",
-    "سلامي": "salami",
-    "بسطرمة": "pastirma",
-    "باكون": "bacon",
-    "هوت": "hot",
-    "دوج": "dog",
-    "رانش": "ranch",
-    "صوص": "sauce",
     "بالرانش": "with ranch",
     "والرانش": "and ranch"
 }
@@ -141,15 +198,38 @@ def translate_arabic_to_english(arabic_text):
         
         if clean_word in ARABIC_TO_ENGLISH:
             translated_words.append(ARABIC_TO_ENGLISH[clean_word])
-        elif clean_word:  # إذا لم توجد الكلمة في القاموس، ترجمها بالذكاء الاصطناعي
-            # محاولة ترجمة أساسية للكلمات غير الموجودة
-            if clean_word:
-                translated_words.append(clean_word)  # احتفظ بها مؤقتاً
+        elif clean_word:  # إذا لم توجد الكلمة في القاموس، حولها إلى أحرف إنجليزية
+            # تحويل الكلمة العربية إلى أحرف إنجليزية
+            transliterated = transliterate_arabic(clean_word)
+            translated_words.append(transliterated)
     
     # دمج الكلمات المترجمة
     translated_text = ' '.join(translated_words)
     
     return translated_text
+
+def transliterate_arabic(arabic_word):
+    """تحويل الكلمات العربية إلى أحرف إنجليزية"""
+    arabic_to_english_chars = {
+        'ا': 'a', 'أ': 'a', 'إ': 'i', 'آ': 'aa',
+        'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'j',
+        'ح': 'h', 'خ': 'kh', 'د': 'd', 'ذ': 'th',
+        'ر': 'r', 'ز': 'z', 'س': 's', 'ش': 'sh',
+        'ص': 's', 'ض': 'd', 'ط': 't', 'ظ': 'z',
+        'ع': 'a', 'غ': 'gh', 'ف': 'f', 'ق': 'q',
+        'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n',
+        'ه': 'h', 'و': 'w', 'ي': 'y', 'ى': 'a',
+        'ة': 'a', 'ء': '', 'ئ': 'e', 'ؤ': 'o'
+    }
+    
+    result = ''
+    for char in arabic_word:
+        if char in arabic_to_english_chars:
+            result += arabic_to_english_chars[char]
+        else:
+            result += char
+    
+    return result
 
 def extract_food_keywords(translated_text):
     """استخراج كلمات الطعام فقط من النص المترجم للبحث"""
@@ -160,21 +240,25 @@ def extract_food_keywords(translated_text):
         # أنواع الطعام
         'burger', 'pizza', 'calzoni', 'sandwich', 'shawarma',
         
-        # اللحوم
-        'ferakh', 'chicken', 'beef', 'meat', 'salami', 'pastirma', 'bacon', 'hot dog',
+        # اللحوم والبروتين
+        'chicken', 'beef', 'meat', 'salami', 'pastirma', 'bacon', 'hot', 'dog', 'shrimp', 'fish', 'tuna',
+        'sausage', 'minced', 'cuttlefish', 'crab', 'caviar', 'anchovy', 'mixed',
         
         # الجبن والصوصات  
         'cheese', 'mozzarella', 'cheddar', 'roquefort', 'sauce', 'ranch', 'barbecue', 'chili',
+        'mayonnaise', 'romi', 'kiri', 'circles', 'sweet',
         
         # الخضروات والإضافات
-        'mushroom', 'onion', 'tomato', 'lettuce', 'pickle', 'rings', 'ananas', 'pineapple',
+        'mushroom', 'onion', 'tomato', 'lettuce', 'pickled', 'cucumber', 'pepper', 'olives',
+        'rings', 'pineapple', 'slices', 'jalapeno', 'sticks', 'doritos',
         
         # أوصاف الطعام
         'crispy', 'double', 'single', 'american', 'spicy', 'tasty', 'delicious', 'juicy',
-        'cheesy', 'vibes', 'crazy', 'delight', 'special',
+        'cheesy', 'vibes', 'crazy', 'delight', 'special', 'grilled', 'smoked', 'grated',
+        'blue', 'zinger', 'mexican', 'mix', 'seafood', 'phosphor',
         
         # أحجام
-        'kbeer', 'large', 'small', 'wost', 'medium'
+        'large', 'small', 'medium'
     ]
     
     # استخراج كلمات الطعام من النص
