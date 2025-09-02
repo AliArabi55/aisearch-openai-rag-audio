@@ -82,7 +82,10 @@ def get_real_translation_dictionary():
         "دبل": "Double",
         "سبيشيال": "Special",
         "مكس": "Mix",
-        "مختلط": "Mixed"
+        "مختلط": "Mixed",
+        "امريكان": "American",
+        "هوت": "Hot",
+        "دوج": "Dog"
     }
 
 def translate_arabic_to_english_real(text):
