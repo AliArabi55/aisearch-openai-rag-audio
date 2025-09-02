@@ -79,7 +79,21 @@ TRANSLATION_DICT = {
     # الأطباق المركبة
     'مشاكل لحوم': 'Meshakel Lohoum', 'مشاكل لحمة': 'Meshakel Lohoum',
     'فوسفور': 'Fosfor', 'فوسفر': 'Fosfor',
-    'سي فود': 'Seafood', 'سى فود': 'Seafood'
+    'سي فود': 'Seafood', 'سى فود': 'Seafood',
+    
+    # كلمات إضافية مهمة
+    'طبق': 'Taba', 'طبقة': 'Taba',
+    'اونيون': 'Onion', 'أونيون': 'Onion',
+    'اونيون رينج': 'Onion Ring', 'اونيون رينجز': 'Onion Rings',
+    'رينج': 'Ring', 'رينجز': 'Rings',
+    'كرسبي': 'Crispy', 'كرسبى': 'Crispy',
+    'موتزاريلا ستيكس': 'Mozzarella Sticks',
+    'ستيكس': 'Sticks', 'شرائح': 'Shara2eh',
+    'اناناس': 'Pineapple', 'أناناس': 'Pineapple',
+    'هالبينو': 'Halapeno', 'هالابينو': 'Halapeno',
+    'شيلي': 'Chili', 'تشيلي': 'Chili',
+    'بيكون': 'Bacon', 'يسطرمه': 'Pastrami',
+    'مبشور': 'Mabshour', 'بشر': 'Bash'
 }
 
 def translate_to_english(arabic_text: str) -> str:
@@ -121,14 +135,41 @@ def translate_to_english(arabic_text: str) -> str:
             translated_words.append(TRANSLATION_DICT[words[i]])
             found_match = True
         else:
-            # إذا لم توجد ترجمة، احتفظ بالكلمة كما هي
-            translated_words.append(words[i])
+            # إذا لم توجد ترجمة، ترجم الكلمة للإنجليزية العادية
+            english_word = transliterate_arabic_to_english(words[i])
+            translated_words.append(english_word)
         
         i += 1
     
     result = ' '.join(translated_words)
     print(f"🔄 ترجمة: '{arabic_text}' → '{result}'")
     return result
+
+def transliterate_arabic_to_english(arabic_word: str) -> str:
+    """ترجمة الكلمات العربية للإنجليزية بناءً على النطق"""
+    # قاموس الحروف العربية للإنجليزية
+    arabic_to_english = {
+        'ا': 'a', 'أ': 'a', 'آ': 'aa', 'إ': 'e',
+        'ب': 'b', 'ت': 't', 'ث': 'th', 'ج': 'g', 'ح': 'h',
+        'خ': 'kh', 'د': 'd', 'ذ': 'th', 'ر': 'r', 'ز': 'z',
+        'س': 's', 'ش': 'sh', 'ص': 's', 'ض': 'd', 'ط': 't',
+        'ظ': 'z', 'ع': 'a', 'غ': 'gh', 'ف': 'f', 'ق': 'q',
+        'ك': 'k', 'ل': 'l', 'م': 'm', 'ن': 'n', 'ه': 'h',
+        'و': 'w', 'ي': 'y', 'ى': 'a', 'ة': 'a', 'ء': 'a'
+    }
+    
+    result = ''
+    for char in arabic_word:
+        if char in arabic_to_english:
+            result += arabic_to_english[char]
+        elif char.isspace():
+            result += ' '
+        else:
+            result += char  # احتفظ بالحروف الإنجليزية والأرقام كما هي
+    
+    # تنظيف النتيجة (إزالة التكرارات وتحسين النطق)
+    result = result.replace('aa', 'a').replace('ee', 'e').replace('oo', 'o')
+    return result.capitalize()
 
 def format_arabic_text(text):
     """تنسيق النص العربي للعرض الصحيح في التيرمينال"""
