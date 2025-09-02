@@ -15,6 +15,121 @@ from azure.search.documents.models import VectorizableTextQuery
 from rtmt import RTMiddleTier, Tool, ToolResult, ToolResultDirection
 from order_manager import order_manager, OrderItem
 
+# قاموس الترجمة من العربية للإنجليزية (النطق العربي)
+TRANSLATION_DICT = {
+    # الأطعمة الرئيسية
+    'كالزونى': 'Calzoni', 'كالزوني': 'Calzoni',
+    'بيتزا': 'Pizza', 'بيتزه': 'Pizza',
+    'برجر': 'Burger', 'برغر': 'Burger',
+    
+    # اللحوم والدواجن
+    'فراخ': 'Ferakh', 'دجاج': 'Ferakh', 'فرخ': 'Ferakh',
+    'لحمة': 'Beef', 'لحم': 'Beef', 'بيف': 'Beef',
+    'سجق': 'Sojok', 'سوجوك': 'Sojok',
+    'سلامي': 'Salami', 'سلاميه': 'Salami',
+    'هوت دوج': 'Hot Dog', 'هوتدوج': 'Hot Dog',
+    'بيف بيكون': 'Beef Bacon', 'بيكون': 'Bacon',
+    'رومي مدخن': 'Romi Medakhan', 'رومى مدخن': 'Romi Medakhan',
+    'مفروم': 'Mafroum', 'بسطرمة': 'Pastirma', 'بستورمه': 'Pastirma',
+    
+    # الأجبان والصلصات
+    'جبنة': 'Cheese', 'جبن': 'Cheese',
+    'موتزاريلا': 'Mozzarella', 'موزاريلا': 'Mozzarella',
+    'شيدر': 'Cheddar', 'تشيدر': 'Cheddar',
+    'روكفور': 'Roquefort', 'ركفور': 'Roquefort',
+    'صلصة': 'Sauce', 'صوص': 'Sauce',
+    'مايونيز': 'Mayonez', 'مايونيز': 'Mayonez',
+    'رانش': 'Ranch', 'باربكيو': 'Barbecue', 'باربيكيو': 'Barbecue',
+    
+    # الخضروات والإضافات
+    'مشروم': 'Mushroom', 'عيش غراب': 'Mushroom',
+    'خيار': 'Khyar', 'خس': 'Khas', 'بصل': 'Basal',
+    'طماطم': 'Tomato', 'طماطة': 'Tomato',
+    'هالابينو': 'Halapeno', 'هالبينو': 'Halapeno',
+    'فلفل': 'Felfel', 'زيتون': 'Zatoon',
+    
+    # المأكولات البحرية
+    'جمبري': 'Gambary', 'جمبرى': 'Gambary',
+    'سيبيا': 'Sepia', 'سيبيه': 'Sepia',
+    'كابوريا': 'Kaboria', 'كابوريه': 'Kaboria',
+    'تونة': 'Tuna', 'تونه': 'Tuna',
+    'أنشوجة': 'Anshoga', 'انشوجه': 'Anshoga',
+    
+    # الأحجام والأنواع
+    'كبير': 'Kbeer', 'كبيرة': 'Kbeer',
+    'وسط': 'Wost', 'وسطة': 'Wost',
+    'سنجل': 'Single', 'سينجل': 'Single',
+    'دبل': 'Double', 'دوبل': 'Double',
+    
+    # الأنواع المتخصصة
+    'كريسبي': 'Crispy', 'كريسبى': 'Crispy',
+    'مشوي': 'Mashwi', 'مشويه': 'Mashwi',
+    'سبايسي': 'Spicy', 'سبايسى': 'Spicy',
+    'مكسيكان': 'Mexican', 'مكسيكانى': 'Mexican',
+    'أمريكان': 'American', 'امريكان': 'American',
+    'بلو': 'Blue', 'تشيزي': 'Cheesy', 'تشيزى': 'Cheesy',
+    'جوسي': 'Juicy', 'جوسى': 'Juicy',
+    'ديلايت': 'Delight', 'ديلايه': 'Delight',
+    'تيستي': 'Tasty', 'تيستى': 'Tasty',
+    'فايبس': 'Vibes', 'فايبز': 'Vibes',
+    'كريزي رانش': 'Crazy Ranch', 'كريزى رانش': 'Crazy Ranch',
+    'زينجر': 'Zinger', 'زينغر': 'Zinger',
+    'سبيشال': 'Special', 'سبيشيال': 'Special',
+    
+    # الأطباق المركبة
+    'مشاكل لحوم': 'Meshakel Lohoum', 'مشاكل لحمة': 'Meshakel Lohoum',
+    'فوسفور': 'Fosfor', 'فوسفر': 'Fosfor',
+    'سي فود': 'Seafood', 'سى فود': 'Seafood'
+}
+
+def translate_to_english(arabic_text: str) -> str:
+    """ترجمة النص العربي إلى الكتابة الإنجليزية (النطق العربي)"""
+    if not arabic_text:
+        return arabic_text
+    
+    # تنظيف النص
+    text = arabic_text.strip().lower()
+    
+    # البحث عن أطول مطابقة أولاً (للعبارات المركبة)
+    translated_words = []
+    words = text.split()
+    i = 0
+    
+    while i < len(words):
+        found_match = False
+        
+        # محاولة البحث عن مطابقة من 3 كلمات
+        if i + 2 < len(words):
+            three_word_phrase = ' '.join(words[i:i+3])
+            if three_word_phrase in TRANSLATION_DICT:
+                translated_words.append(TRANSLATION_DICT[three_word_phrase])
+                i += 3
+                found_match = True
+                continue
+        
+        # محاولة البحث عن مطابقة من كلمتين
+        if i + 1 < len(words):
+            two_word_phrase = ' '.join(words[i:i+2])
+            if two_word_phrase in TRANSLATION_DICT:
+                translated_words.append(TRANSLATION_DICT[two_word_phrase])
+                i += 2
+                found_match = True
+                continue
+        
+        # البحث عن كلمة واحدة
+        if words[i] in TRANSLATION_DICT:
+            translated_words.append(TRANSLATION_DICT[words[i]])
+            found_match = True
+        else:
+            # إذا لم توجد ترجمة، احتفظ بالكلمة كما هي
+            translated_words.append(words[i])
+        
+        i += 1
+    
+    result = ' '.join(translated_words)
+    print(f"🔄 ترجمة: '{arabic_text}' → '{result}'")
+    return result
+
 def format_arabic_text(text):
     """تنسيق النص العربي للعرض الصحيح في التيرمينال"""
     try:
@@ -31,14 +146,14 @@ def format_arabic_text(text):
 _search_tool_schema = {
     "type": "function",
     "name": "search",
-    "description": "البحث في قاعدة المعرفة واختياريا إضافة منتج للطلب. قاعدة المعرفة باللغة العربية، ابحث مباشرة بالعربية. " + \
+    "description": "البحث في قاعدة المعرفة واختياريا إضافة منتج للطلب. يمكنك البحث بالعربية العادية - سيتم الترجمة تلقائياً. " + \
                    "النتائج تظهر كـ: [ID] اسم المنتج - المكونات (السعر جنيه).",
     "parameters": {
         "type": "object",
         "properties": {
             "query": {
                 "type": "string",
-                "description": "استعلام البحث باللغة العربية"
+                "description": "استعلام البحث بالعربية العادية - سيتم ترجمته تلقائياً"
             },
             "add_to_order": {
                 "type": "boolean",
@@ -124,8 +239,11 @@ async def _search_tool(
     use_vector_query: bool,
     args: Any) -> ToolResult:
     
-    query = args["query"]
+    original_query = args["query"]
     add_to_order = args.get("add_to_order", False)
+    
+    # ترجمة الاستعلام تلقائياً للإنجليزية
+    translated_query = translate_to_english(original_query)
     
     # طباعة بترميز صحيح للعربية مع دعم RTL
     try:
@@ -135,19 +253,19 @@ async def _search_tool(
         pop_mark = '\u202C'  # Pop Directional Formatting
         
         # تنسيق النص مع الاتجاه الصحيح
-        search_text = f"🔍 البحث عن: '{query}'"
+        search_text = f"🔍 البحث عن: '{original_query}' → '{translated_query}'"
         order_text = f"إضافة للطلب: {'نعم' if add_to_order else 'لا'}"
         fields_text = f"📋 استخدام الحقول: ID={identifier_field}, Content={content_field}"
         
         print(f"{search_text} | {order_text}")
         print(fields_text)
     except UnicodeEncodeError:
-        print(f"Search for: '{query}' | Add to order: {add_to_order}")
+        print(f"Search for: '{original_query}' → '{translated_query}' | Add to order: {add_to_order}")
         print(f"Using fields: ID={identifier_field}, Content={content_field}")
     
-    # بحث نصي بسيط في Azure AI Search مع دعم النص العربي
+    # بحث نصي بسيط في Azure AI Search باستخدام الاستعلام المترجم
     search_results = await search_client.search(
-        search_text=query, 
+        search_text=translated_query,  # استخدام الاستعلام المترجم
         query_type="simple",  # البحث النصي البسيط يدعم العربية جيداً
         top=5,
         select=f"{identifier_field},Name,{content_field},Price",
@@ -181,10 +299,7 @@ async def _search_tool(
         }
         found_items.append(item_data)
         
-        # عرض النتائج بصيغة عربية واضحة
-        result += f"🍽️ [{id_field}] {name_field}\n"
-        result += f"المكونات: {content_field_value}\n"
-        result += f"السعر: {price} جنيه\n-----\n"
+        # لا نضيف شيئاً لـ result هنا - سنُرسل العنصر الأول فقط للموديل
     
     if result_count == 0:
         try:
@@ -193,11 +308,8 @@ async def _search_tool(
         except UnicodeEncodeError:
             print("No results found!")
         
-        # إضافة اقتراحات إذا لم توجد نتائج
-        result = "عذراً، لم أجد هذا المنتج. جرب البحث عن:\n"
-        result += "🍕 بيتزا (فراخ، سي فود، كابوريا)\n"
-        result += "🍔 برجر (بيف، دجاج، تشيزي)\n"
-        result += "أو قل 'اعرض كل المنتجات'"
+        # عندما لا توجد نتائج، قل "ليس عندي" فقط
+        result = "ليس عندي."
         return ToolResult(result, ToolResultDirection.TO_SERVER)
     else:
         try:
@@ -205,6 +317,16 @@ async def _search_tool(
             print(found_text)
         except UnicodeEncodeError:
             print(f"Found {result_count} results")
+        
+        # إرسال العنصر الأول فقط للموديل بصيغة مبسطة
+        if found_items:
+            first_item = found_items[0]
+            name = first_item['Name']
+            price = first_item['Price']
+            ingredients = first_item['ingredients'] or "غير محدد"
+            
+            # الصيغة المبسطة للموديل - العنصر الأول فقط
+            result = f"{name} - {price} جنيه\nالمكونات: {ingredients}"
         
         # إذا طُلب إضافة المنتج للطلب وتم العثور على نتائج
         if add_to_order and found_items:
@@ -215,7 +337,7 @@ async def _search_tool(
                 # الحصول على ملخص الطلب المحدث
                 order_summary = order_manager.get_order_summary()
                 
-                result += f"\n✅ {order_message}\n\n"
+                result += f"\n\n✅ {order_message}\n\n"
                 result += f"📋 الطلب الحالي ({order_summary['total_items']} قطعة):\n"
                 for item in order_summary['items']:
                     result += f"• {item['quantity']}x {item['name']} - {item['price']} ج\n"
@@ -233,8 +355,8 @@ async def _search_tool(
             else:
                 result += f"\n❌ {order_message}"
         else:
-            # مجرد عرض النتائج بدون إضافة للطلب
-            result += f"\n💡 لطلب أي منتج، قل: 'أريد [اسم المنتج]'"
+            # مجرد عرض النتائج بدون إضافة للطلب - لا نضيف نصائح إضافية
+            pass
     
     return ToolResult(result, ToolResultDirection.TO_SERVER)
 
