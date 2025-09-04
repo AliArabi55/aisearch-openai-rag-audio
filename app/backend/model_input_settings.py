@@ -64,43 +64,23 @@ class ModelInputSettings:
 
 def generate_model_input(docs, query, search_query):
     """
-    توليد النص الذي سيتم إرساله للموديل
+    توليد النص المبسط الذي سيتم إرساله للموديل
+    التنسيق: رقم- الاسم، السعر
     """
     if not docs:
         return "لم يتم العثور على نتائج مطابقة لبحثك."
     
-    config = ModelInputSettings.get_display_config()
-    
-    # بناء النص بناءً على الإعدادات
+    # بناء قائمة مبسطة
     result_parts = []
     
-    for doc in docs:
-        item_parts = []
+    for i, doc in enumerate(docs, 1):
+        name = doc.get('Name', 'غير محدد')
+        price = doc.get('Price', 'غير محدد')
         
-        # الاسم دائماً موجود
-        if 'Name' in doc:
-            item_parts.append(f"📝 الاسم: {doc['Name']}")
-        
-        # السعر دائماً موجود
-        if 'Price' in doc:
-            item_parts.append(f"💰 السعر: {doc['Price']}")
-        
-        # المكونات حسب الإعدادات
-        if config['ingredients_enabled'] and 'ingredients' in doc:
-            ingredients = doc['ingredients']
-            if ingredients and ingredients.strip():
-                item_parts.append(f"🥗 المكونات: {ingredients}")
-        
-        # الوصف في الوضع الكامل
-        if config['mode'] == 'full_details' and 'Description' in doc:
-            description = doc['Description']
-            if description and description.strip():
-                item_parts.append(f"📋 الوصف: {description}")
-        
-        if item_parts:
-            result_parts.append("\n".join(item_parts))
+        # تنسيق مبسط: رقم- الاسم، السعر
+        if price and str(price).strip() and str(price) != "غير محدد":
+            result_parts.append(f"{i}- {name}, {price}")
+        else:
+            result_parts.append(f"{i}- {name}, السعر غير متاح")
     
-    if result_parts:
-        return "\n\n" + "\n\n---\n\n".join(result_parts)
-    else:
-        return "لم يتم العثور على نتائج مطابقة لبحثك."
+    return "\n".join(result_parts)

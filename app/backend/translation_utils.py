@@ -54,7 +54,14 @@ def get_real_translation_dictionary():
         
         # الخضروات
         "طماطم": "Tomato",
-        "بصل": "Onion",
+        "بصل": "Onion", 
+        "أونين رينجز": "Onion Rings",
+        "اونين رينجز": "Onion Rings",
+        "أونيان رينجز": "Onion Rings", 
+        "اونيان رينجز": "Onion Rings",
+        "حلقات البصل": "Onion Rings",
+        "حلقات بصل": "Onion Rings",
+        "رينجز": "Rings",
         "فلفل": "Pepper",
         "خس": "Lettuce",
         "خيار": "Cucumber",
@@ -96,7 +103,20 @@ def translate_arabic_to_english_real(text):
         return ""
     
     dictionary = get_real_translation_dictionary()
-    words = text.strip().split()
+    text = text.strip()
+    
+    # أولاً نحاول ترجمة النص كاملاً إذا كان موجوداً في القاموس
+    if text in dictionary:
+        return dictionary[text]
+    
+    # ثم نحاول البحث عن عبارات فرعية
+    for arabic_phrase, english_phrase in dictionary.items():
+        if len(arabic_phrase.split()) > 1:  # عبارات متعددة الكلمات
+            if arabic_phrase in text:
+                text = text.replace(arabic_phrase, english_phrase)
+    
+    # أخيراً نترجم الكلمات المتبقية واحدة بواحدة
+    words = text.split()
     translated_words = []
     
     for word in words:
@@ -110,10 +130,11 @@ def translate_arabic_to_english_real(text):
             # إذا لم توجد في القاموس، نحاول البحث عن كلمات مشابهة
             found = False
             for arabic_word, english_word in dictionary.items():
-                if clean_word in arabic_word or arabic_word in clean_word:
-                    translated_words.append(english_word)
-                    found = True
-                    break
+                if len(arabic_word.split()) == 1:  # كلمات مفردة فقط
+                    if clean_word in arabic_word or arabic_word in clean_word:
+                        translated_words.append(english_word)
+                        found = True
+                        break
             
             if not found:
                 # الاحتفاظ بالكلمة كما هي إذا لم توجد ترجمة

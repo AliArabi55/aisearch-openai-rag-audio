@@ -16,6 +16,29 @@ from rtmt import ToolResult, ToolResultDirection, Tool, RTMiddleTier
 from translation_utils import translate_and_extract_for_search
 from model_input_settings import ModelInputSettings, generate_model_input
 
+# إصلاح خاص لترجمة أونين رينجز
+def fix_onion_rings_translation(text):
+    """إصلاح خاص لترجمة أونين رينجز والمصطلحات المشابهة"""
+    
+    # قاموس إصلاح سريع
+    onion_fixes = {
+        "أونين رينجز": "Onion Rings",
+        "اونين رينجز": "Onion Rings", 
+        "أونيان رينجز": "Onion Rings",
+        "اونيان رينجز": "Onion Rings",
+        "حلقات البصل": "Onion Rings",
+        "حلقات بصل": "Onion Rings"
+    }
+    
+    text = text.strip()
+    
+    # فحص مباشر للترجمة الخاصة
+    if text in onion_fixes:
+        return onion_fixes[text], "ترجمة محسنة لأونين رينجز"
+    
+    # ترجمة عامة
+    return translate_and_extract_for_search(text)
+
 # إعداد الترميز للنصوص العربية
 if sys.platform.startswith('win'):
     import codecs
@@ -135,8 +158,8 @@ async def _search_tool(
     if cached_result:
         return ToolResult(cached_result['response_text'], ToolResultDirection.TO_CLIENT)
     
-    # ترجمة الاستعلام والاستخراج
-    search_query, current_mode = translate_and_extract_for_search(query)
+    # ترجمة الاستعلام والاستخراج (مع إصلاح أونين رينجز)
+    search_query, current_mode = fix_onion_rings_translation(query)
     
     print(f"🔍 البحث الأصلي: {query}")
     print(f"🎯 البحث المترجم: {search_query}")
@@ -147,7 +170,7 @@ async def _search_tool(
         search_results = None
         search_method_used = ""
         
-        # محاولة البحث الدلالي أولاً
+        # محاولة البحث الدلالي في Name و ingredients معاً
         try:
             if semantic_configuration:
                 search_results = search_client.search(
@@ -156,7 +179,7 @@ async def _search_tool(
                     semantic_configuration_name=semantic_configuration,
                     top=5,
                     select=f"{identifier_field},Name,{content_field},Price",
-                    search_fields=[content_field],  # فقط ingredients لأن Name غير قابل للبحث
+                    search_fields=["Name", content_field],  # البحث في Name و ingredients معاً
                     query_caption="extractive",
                     query_answer="extractive"
                 )
@@ -166,14 +189,14 @@ async def _search_tool(
                     query_type="simple",
                     top=5,
                     select=f"{identifier_field},Name,{content_field},Price",
-                    search_fields=[content_field]  # فقط ingredients لأن Name غير قابل للبحث
+                    search_fields=["Name", content_field]  # البحث في Name و ingredients معاً
                 )
             
             # تجربة تحويل النتائج إلى قائمة للتأكد من عدم وجود خطأ
             results_list = list(search_results)
             search_results = results_list
-            search_method_used = "ingredients only"
-            print("✅ البحث نجح مع حقل ingredients فقط")
+            search_method_used = "Name and ingredients"
+            print("✅ البحث نجح مع حقلي Name و ingredients معاً")
             
         except Exception as name_search_error:
             # إذا فشل البحث مع Name، حاول بدونه
@@ -446,7 +469,7 @@ def attach_rag_tools(rtmt: RTMiddleTier, credentials, search_endpoint: str, sear
     
     async def add_to_order_wrapper(args: Any) -> ToolResult:
         """أداة إضافة للطلب - توجه المستخدم لاستخدام search"""
-        return ToolResult("استخدم 'search' مع add_to_order=true بدلاً من استخدام add_to_order منفصلة", ToolResultDirection.TO_USER)
+        return ToolResult("استخدم 'search' مع add_to_order=true بدلاً من استخدام add_to_order منفصلة", ToolResultDirection.TO_CLIENT)
     
     rtmt.tools["add_to_order"] = Tool(schema=add_to_order_schema, target=add_to_order_wrapper)
     
@@ -465,7 +488,7 @@ def attach_rag_tools(rtmt: RTMiddleTier, credentials, search_endpoint: str, sear
     async def clear_cache_wrapper(args: Any) -> ToolResult:
         """مسح الذاكرة المؤقتة"""
         clear_cache()
-        return ToolResult("🗑️ تم مسح الذاكرة المؤقتة بنجاح", ToolResultDirection.TO_USER)
+        return ToolResult("🗑️ تم مسح الذاكرة المؤقتة بنجاح", ToolResultDirection.TO_CLIENT)
     
     rtmt.tools["clear_cache"] = Tool(schema=clear_cache_schema, target=clear_cache_wrapper)
     
