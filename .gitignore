@@ -152,3 +152,12 @@ static/
 data/**/*.md5
 
 .DS_Store
+
+# Azure keys and secrets - NEVER commit these
+*.env
+.env
+**/.env
+app/.env
+app/backend/.env
+**/secrets.py
+check_azure_config.py
