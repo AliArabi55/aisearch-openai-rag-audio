@@ -1,0 +1,21 @@
+{
+    "app": {
+        "title": "إطلب وجبتك الآن",
+        "footer": "Built by Naslst Team",
+        "stopRecording": "Detener grabación",
+        "startRecording": "Comenzar grabación",
+        "stopConversation": "Detener conversación"
+    },
+    "status": {
+        "notRecordingMessage": "أطلب طلبك الآن من مطعم Circles",
+        "conversationInProgress": "Conversación en progreso"
+    },
+    "history": {
+        "answerHistory": "Historial de respuestas",
+        "noHistory": "Aún no hay historial."
+    },
+    "groundingFiles": {
+        "title": "Archivos de fundamentación",
+        "description": "Archivos utilizados para fundamentar las respuestas."
+    }
+}

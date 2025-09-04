@@ -1,0 +1,380 @@
+[
+  {
+    "query": "أريد بيتزا تونه وسط",
+    "response_time": 0.1659986972808838,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:29:58.730634",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز كالزونى تونه وسط",
+    "response_time": 0.24599814414978027,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:00.991565",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا تونه كبير",
+    "response_time": 0.10400176048278809,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:03.107246",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا جمبري كبير",
+    "response_time": 0.10799932479858398,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:05.215788",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا جمبري وسط",
+    "response_time": 0.12399816513061523,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:07.347624",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا سبيا كبير",
+    "response_time": 0.15598702430725098,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:09.510999",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا سبيا وسط",
+    "response_time": 0.2200005054473877,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:11.739557",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا سي فود وسط",
+    "response_time": 0.3510012626647949,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:14.101573",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا سي فود كبير",
+    "response_time": 0.30900144577026367,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:16.417111",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا كابوريا كبير",
+    "response_time": 0.22299957275390625,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:18.645457",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا كابوريا وسط",
+    "response_time": 0.3599982261657715,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:21.019596",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا فسفور كبير",
+    "response_time": 0.3258540630340576,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:23.350856",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب كالزونى فسفور وسط",
+    "response_time": 0.25597071647644043,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:25.611624",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا تونه وسط",
+    "response_time": 0.11772394180297852,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:27.734975",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز كالزونى تونه وسط",
+    "response_time": 0.1439986228942871,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:29.887597",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا تونه كبير",
+    "response_time": 0.1920003890991211,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:32.083760",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا جمبري كبير",
+    "response_time": 0.2926979064941406,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:34.384915",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا جمبري وسط",
+    "response_time": 0.1903681755065918,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:36.579884",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا سبيا كبير",
+    "response_time": 0.2905728816986084,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:38.880850",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا سبيا وسط",
+    "response_time": 0.18343782424926758,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:41.066179",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا سي فود وسط",
+    "response_time": 0.2814171314239502,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:43.362597",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا سي فود كبير",
+    "response_time": 0.16312193870544434,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:45.525976",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا كابوريا كبير",
+    "response_time": 0.23948907852172852,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:47.778428",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا كابوريا وسط",
+    "response_time": 0.3839888572692871,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:50.166961",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا فسفور كبير",
+    "response_time": 0.3789994716644287,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:52.556843",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب كالزونى فسفور وسط",
+    "response_time": 0.3680150508880615,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:54.935658",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا تونه وسط",
+    "response_time": 0.34101438522338867,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:57.281308",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز كالزونى تونه وسط",
+    "response_time": 0.2869997024536133,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:30:59.573373",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا تونه كبير",
+    "response_time": 0.18399930000305176,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:01.767434",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا جمبري كبير",
+    "response_time": 0.2689979076385498,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:04.037077",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا جمبري وسط",
+    "response_time": 0.15161395072937012,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:06.202813",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا سبيا كبير",
+    "response_time": 0.20400023460388184,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:08.406840",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا سبيا وسط",
+    "response_time": 0.3210005760192871,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:10.741664",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا سي فود وسط",
+    "response_time": 0.2550013065338135,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:13.008962",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا سي فود كبير",
+    "response_time": 0.1100001335144043,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:15.119283",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا كابوريا كبير",
+    "response_time": 0.13105463981628418,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:17.261105",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا كابوريا وسط",
+    "response_time": 0.16700005531311035,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:19.433739",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا فسفور كبير",
+    "response_time": 0.23800015449523926,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:21.675552",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب كالزونى فسفور وسط",
+    "response_time": 0.386002779006958,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:24.071733",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا تونه وسط",
+    "response_time": 0.3839995861053467,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:26.467632",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز كالزونى تونه وسط",
+    "response_time": 0.3769991397857666,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:28.853103",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا تونه كبير",
+    "response_time": 0.36500096321105957,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:31.229395",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا جمبري كبير",
+    "response_time": 0.3409998416900635,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:33.580940",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا جمبري وسط",
+    "response_time": 0.2824246883392334,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:35.864455",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا سبيا كبير",
+    "response_time": 0.16804075241088867,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:38.035714",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا سبيا وسط",
+    "response_time": 0.2467334270477295,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:40.292987",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب بيتزا سي فود وسط",
+    "response_time": 0.10200119018554688,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:42.403320",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "هات بيتزا سي فود كبير",
+    "response_time": 0.10700368881225586,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:44.513653",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "خد بيتزا كابوريا كبير",
+    "response_time": 0.12300276756286621,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:46.645255",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا كابوريا وسط",
+    "response_time": 0.15700054168701172,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:48.813546",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز بيتزا فسفور كبير",
+    "response_time": 0.22699666023254395,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:51.053210",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أطلب كالزونى فسفور وسط",
+    "response_time": 0.35977911949157715,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:53.419234",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "أريد بيتزا تونه وسط",
+    "response_time": 0.32619786262512207,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:55.751620",
+    "speed_rating": "سريع"
+  },
+  {
+    "query": "عايز كالزونى تونه وسط",
+    "response_time": 0.2651381492614746,
+    "simulated": true,
+    "timestamp": "2025-09-01T23:31:58.029759",
+    "speed_rating": "سريع"
+  }
+]

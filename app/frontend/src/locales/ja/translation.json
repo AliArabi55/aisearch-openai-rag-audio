@@ -1,0 +1,21 @@
+{
+    "app": {
+        "title": "إطلب وجبتك الآن",
+        "footer": "Built by Naslst Team",
+        "stopRecording": "録音を停止",
+        "startRecording": "録音を開始",
+        "stopConversation": "会話を停止"
+    },
+    "status": {
+        "notRecordingMessage": "أطلب طلبك الآن من مطعم Circles",
+        "conversationInProgress": "会話が進行中"
+    },
+    "history": {
+        "answerHistory": "回答履歴",
+        "noHistory": "まだ履歴はありません。"
+    },
+    "groundingFiles": {
+        "title": "グラウンディング ファイル",
+        "description": "回答をグラウンディングするために使用されるファイル。"
+    }
+}
