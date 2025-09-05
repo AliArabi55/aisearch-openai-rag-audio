@@ -77,10 +77,24 @@ def generate_model_input(docs, query, search_query):
         name = doc.get('Name', 'غير محدد')
         price = doc.get('Price', 'غير محدد')
         
+        # تحسين التحقق من السعر - معالجة الأرقام والنصوص
+        price_available = (
+            price is not None and 
+            str(price).strip() and 
+            str(price) != "غير محدد" and
+            str(price) != "None" and
+            str(price) != ""
+        )
+        
         # تنسيق مبسط: رقم- الاسم، السعر
-        if price and str(price).strip() and str(price) != "غير محدد":
+        if price_available:
             result_parts.append(f"{i}- {name}, {price}")
         else:
             result_parts.append(f"{i}- {name}, السعر غير متاح")
+            
+        # طباعة تشخيصية للمطورين
+        print(f"🔍 العنصر {i}: {name}")
+        print(f"   💰 السعر الخام: {price} (نوع: {type(price)})")
+        print(f"   ✅ السعر متاح: {price_available}")
     
     return "\n".join(result_parts)
