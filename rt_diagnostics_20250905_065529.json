@@ -1,0 +1,32 @@
+{
+  "timestamp": "2025-09-05T06:55:28.389032",
+  "environment_check": {
+    "present_vars": [],
+    "missing_vars": [
+      "AZURE_SEARCH_SERVICE_ENDPOINT",
+      "AZURE_SEARCH_INDEX_NAME",
+      "AZURE_SEARCH_API_KEY",
+      "AZURE_OPENAI_ENDPOINT",
+      "AZURE_OPENAI_API_KEY",
+      "AZURE_OPENAI_DEPLOYMENT_NAME"
+    ],
+    "status": "ERROR"
+  },
+  "azure_search_performance": {
+    "status": "ERROR"
+  },
+  "openai_realtime_check": {
+    "realtime_model": false,
+    "websocket_setup": false,
+    "voice_settings": true,
+    "rtmt_setup": true
+  },
+  "system_resources": {
+    "cpu_percent": 15.3,
+    "cpu_count": 12,
+    "memory_percent": 78.3,
+    "memory_available_gb": 3.449848175048828,
+    "disk_percent": 99.9359275437431
+  },
+  "recommendations": []
+}

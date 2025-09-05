@@ -1,0 +1,73 @@
+{
+  "timestamp": "2025-09-05T07:01:55.169242",
+  "environment_check": {
+    "status": {
+      "AZURE_SEARCH_ENDPOINT": "✅ متوفر",
+      "AZURE_SEARCH_INDEX_NAME": "✅ متوفر",
+      "AZURE_SEARCH_API_KEY": "✅ متوفر",
+      "AZURE_OPENAI_ENDPOINT": "✅ متوفر",
+      "AZURE_OPENAI_API_KEY": "✅ متوفر"
+    },
+    "missing_variables": [],
+    "all_present": true
+  },
+  "search_performance": {
+    "queries": [
+      {
+        "query": "بيتزا",
+        "time_seconds": 1.4062042236328125,
+        "results_count": 0,
+        "status": "success"
+      },
+      {
+        "query": "برجر",
+        "time_seconds": 0.15124940872192383,
+        "results_count": 0,
+        "status": "success"
+      },
+      {
+        "query": "دجاج",
+        "time_seconds": 0.15099024772644043,
+        "results_count": 0,
+        "status": "success"
+      },
+      {
+        "query": "سلطة",
+        "time_seconds": 0.14664983749389648,
+        "results_count": 0,
+        "status": "success"
+      },
+      {
+        "query": "chicken",
+        "time_seconds": 0.14849090576171875,
+        "results_count": 5,
+        "status": "success"
+      }
+    ],
+    "average_time_seconds": 0.4007169246673584,
+    "performance_rating": "fast"
+  },
+  "model_input_performance": {
+    "times": [
+      0.0010001659393310547,
+      0.00099945068359375,
+      0.0010228157043457031,
+      0.0,
+      0.0009770393371582031
+    ],
+    "average_time_seconds": 0.0007998943328857422,
+    "performance_rating": "fast"
+  },
+  "memory_performance": {
+    "clear_time": 0.0,
+    "save_time": 0.0,
+    "retrieve_time": 0.0,
+    "cache_working": true
+  },
+  "recommendations": [
+    "🚀 استخدام البحث الدلالي لنتائج أسرع وأدق",
+    "📝 تحديد عدد النتائج لتقليل البيانات المرسلة",
+    "⚡ تفعيل الضغط للاستجابات الكبيرة",
+    "🧠 استخدام الذاكرة المؤقتة للاستعلامات المتكررة"
+  ]
+}
