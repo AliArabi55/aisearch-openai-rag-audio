@@ -86,11 +86,11 @@ def generate_model_input(docs, query, search_query):
             str(price) != ""
         )
         
-        # تنسيق مبسط: رقم- الاسم، السعر
+        # تنسيق مبسط: Name: [name], Price: [price]
         if price_available:
-            result_parts.append(f"{i}- {name}, {price}")
+            result_parts.append(f"Name: {name}, Price: {price}")
         else:
-            result_parts.append(f"{i}- {name}, السعر غير متاح")
+            result_parts.append(f"Name: {name}, Price: غير متاح")
             
         # طباعة تشخيصية للمطورين
         print(f"🔍 العنصر {i}: {name}")

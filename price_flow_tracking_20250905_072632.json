@@ -1,0 +1,213 @@
+{
+  "timestamp": "2025-09-05T07:26:29.135846",
+  "steps": [
+    {
+      "step": "Azure Search Direct Test",
+      "timestamp": "2025-09-05T07:26:30.849931",
+      "success": true,
+      "data": {
+        "total_results": 3,
+        "sample_item": {
+          "Price": 150,
+          "ID": "107",
+          "ingredients": "Sauce - Pepper - Olives - Mozzarella - Tuna",
+          "Name": "Medium Tuna Pizza",
+          "@search.score": 4.5658903,
+          "@search.reranker_score": null,
+          "@search.highlights": null,
+          "@search.captions": null
+        },
+        "price_value": 150,
+        "price_type": "int",
+        "details": "وجدت 3 نتائج، السعر: 150 (نوع: int)"
+      }
+    },
+    {
+      "step": "Translation Flow Test",
+      "timestamp": "2025-09-05T07:26:30.853933",
+      "success": true,
+      "data": {
+        "results": [
+          {
+            "original": "بيتزا تونه وسط",
+            "translated": "Pizza Tuna Medium",
+            "mode": "ترجمة من العربي للإنجليزي"
+          },
+          {
+            "original": "بيتزا تونة وسط",
+            "translated": "Pizza Tuna Medium",
+            "mode": "ترجمة من العربي للإنجليزي"
+          },
+          {
+            "original": "تونة بيتزا",
+            "translated": "Tuna Pizza",
+            "mode": "ترجمة من العربي للإنجليزي"
+          },
+          {
+            "original": "tuna pizza medium",
+            "translated": "tuna pizza medium",
+            "mode": "ترجمة من العربي للإنجليزي"
+          }
+        ],
+        "details": "اختبار 4 استعلامات ترجمة"
+      }
+    },
+    {
+      "step": "Ragtools Search Flow",
+      "timestamp": "2025-09-05T07:26:32.770474",
+      "success": true,
+      "data": {
+        "arabic_query": "بيتزا تونه وسط",
+        "translated_query": "Pizza Tuna Medium",
+        "results_count": 5,
+        "docs": [
+          {
+            "ID": "107",
+            "Name": "Medium Tuna Pizza",
+            "ingredients": "Sauce - Pepper - Olives - Mozzarella - Tuna",
+            "Price": 150
+          },
+          {
+            "ID": "109",
+            "Name": "Large Tuna Pizza",
+            "ingredients": "Sauce - Pepper - Olives - Mozzarella - Tuna",
+            "Price": 185
+          },
+          {
+            "ID": "108",
+            "Name": "Medium Tuna Calzone",
+            "ingredients": "",
+            "Price": 140
+          },
+          {
+            "ID": "73",
+            "Name": "Medium Beef Bacon Pizza",
+            "ingredients": "Sauce - Pepper - Olives - Mozzarella - Beef Bacon",
+            "Price": 140
+          },
+          {
+            "ID": "105",
+            "Name": "Medium Crispy Chicken Pizza",
+            "ingredients": "Sauce - Pepper - Olives - Mozzarella - Crispy Chicken",
+            "Price": 170
+          }
+        ],
+        "details": "العثور على 5 نتائج من ragtools"
+      }
+    },
+    {
+      "step": "Model Input Generation",
+      "timestamp": "2025-09-05T07:26:32.772475",
+      "success": true,
+      "data": {
+        "input_docs_count": 5,
+        "generated_text": "1- Medium Tuna Pizza, 150\n2- Large Tuna Pizza, 185\n3- Medium Tuna Calzone, 140\n4- Medium Beef Bacon Pizza, 140\n5- Medium Crispy Chicken Pizza, 170",
+        "prices_in_docs": [
+          150,
+          185,
+          140,
+          140,
+          170
+        ],
+        "prices_shown_count": 5,
+        "price_not_available_count": 0,
+        "details": "نولد نص للموديل مع 5 أسعار ظاهرة و 0 أسعار غير متاحة"
+      }
+    },
+    {
+      "step": "Deep Price Validation Analysis",
+      "timestamp": "2025-09-05T07:26:32.775477",
+      "success": true,
+      "data": {
+        "validation_results": [
+          {
+            "doc_index": 1,
+            "name": "Medium Tuna Pizza",
+            "raw_price": 150,
+            "price_type": "int",
+            "price_str": "150",
+            "price_str_strip": "150",
+            "checks": {
+              "not_none": true,
+              "strip_not_empty": true,
+              "not_غير_محدد": true,
+              "strip_not_empty_string": true
+            },
+            "final_result": true
+          },
+          {
+            "doc_index": 2,
+            "name": "Large Tuna Pizza",
+            "raw_price": 185,
+            "price_type": "int",
+            "price_str": "185",
+            "price_str_strip": "185",
+            "checks": {
+              "not_none": true,
+              "strip_not_empty": true,
+              "not_غير_محدد": true,
+              "strip_not_empty_string": true
+            },
+            "final_result": true
+          },
+          {
+            "doc_index": 3,
+            "name": "Medium Tuna Calzone",
+            "raw_price": 140,
+            "price_type": "int",
+            "price_str": "140",
+            "price_str_strip": "140",
+            "checks": {
+              "not_none": true,
+              "strip_not_empty": true,
+              "not_غير_محدد": true,
+              "strip_not_empty_string": true
+            },
+            "final_result": true
+          },
+          {
+            "doc_index": 4,
+            "name": "Medium Beef Bacon Pizza",
+            "raw_price": 140,
+            "price_type": "int",
+            "price_str": "140",
+            "price_str_strip": "140",
+            "checks": {
+              "not_none": true,
+              "strip_not_empty": true,
+              "not_غير_محدد": true,
+              "strip_not_empty_string": true
+            },
+            "final_result": true
+          },
+          {
+            "doc_index": 5,
+            "name": "Medium Crispy Chicken Pizza",
+            "raw_price": 170,
+            "price_type": "int",
+            "price_str": "170",
+            "price_str_strip": "170",
+            "checks": {
+              "not_none": true,
+              "strip_not_empty": true,
+              "not_غير_محدد": true,
+              "strip_not_empty_string": true
+            },
+            "final_result": true
+          }
+        ],
+        "total_docs": 5,
+        "available_prices": 5,
+        "unavailable_prices": 0,
+        "details": "تحليل 5 عناصر: 5 متاح، 0 غير متاح"
+      }
+    }
+  ],
+  "issues_found": [],
+  "recommendations": [
+    "Azure Search يرجع أسعار من نوع integer - هذا صحيح",
+    "التأكد من أن Azure Search يرجع بيانات صحيحة",
+    "اختبار التطبيق مع استعلامات مختلفة",
+    "مراقبة logs التطبيق أثناء الاستخدام"
+  ]
+}

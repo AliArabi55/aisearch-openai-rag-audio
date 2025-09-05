@@ -161,10 +161,13 @@ async def _search_tool(
     # ترجمة الاستعلام والاستخراج (مع إصلاح أونين رينجز)
     search_query, current_mode = fix_onion_rings_translation(query)
     
-    print(f"🔍 البحث الأصلي: {query}")
-    print(f"🎯 البحث المترجم: {search_query}")
-    print(f"🔧 البحث الدلالي: {'مفعل' if semantic_configuration else 'معطل'}")
-    print(f"⚙️ وضع الترجمة: {current_mode}")
+    print(f"\n{'='*50}")
+    print(f"🎯 تتبع عملية البحث التفصيلي")
+    print(f"{'='*50}")
+    print(f"📝 الخطوة 1: الطلب الأصلي: '{query}'")
+    print(f"� الخطوة 2: النص المترجم: '{search_query}'")
+    print(f"🔧 الخطوة 3: البحث الدلالي: {'مفعل' if semantic_configuration else 'معطل'}")
+    print(f"⚙️ الخطوة 4: وضع الترجمة: {current_mode}")
     
     try:
         search_results = None
@@ -237,13 +240,19 @@ async def _search_tool(
             'search_method': search_method_used
         }
         
+        print(f"📊 الخطوة 6: عدد النتائج الفعلية: {len(list(search_results))}")
+        
+        result_counter = 0
         for r in search_results:
+            result_counter += 1
             identifier_value = r.get(identifier_field, "غير محدد")
             name_value = r.get("Name", "بدون اسم")
             content_field_value = r.get(content_field, "بدون وصف")
             price_value = r.get("Price", "غير محدد")
             search_score = r.get("@search.score", 0)
             reranker_score = r.get("@search.reranker_score", None)
+            
+            print(f"  📋 نتيجة {result_counter}: {name_value} - السعر: {price_value}")
             
             # إنشاء النتيجة للعرض
             result_item = {
@@ -287,6 +296,11 @@ async def _search_tool(
         # 💾 حفظ النتائج في الذاكرة المؤقتة
         cache_data['response_text'] = result_text
         save_to_cache(query, cache_data)
+        
+        print(f"🎯 الخطوة 7: النتيجة النهائية التي ستُرسل للموديل:")
+        print(f"{'='*50}")
+        print(result_text[:300] + "..." if len(result_text) > 300 else result_text)
+        print(f"{'='*50}")
         
         return ToolResult(result_text, ToolResultDirection.TO_CLIENT)
         
