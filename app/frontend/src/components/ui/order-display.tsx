@@ -8,13 +8,18 @@ interface OrderDisplayProps {
 }
 
 const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isVisible }) => {
-    if (!isVisible || orderItems.length === 0) {
+    console.log("🎨 OrderDisplay Props:", { orderItems, totalPrice, isVisible });
+    
+    if (!isVisible) {
+        console.log("❌ OrderDisplay hidden (isVisible=false)");
         return null;
     }
 
+    console.log("✅ OrderDisplay rendering with", orderItems.length, "items");
+
     return (
         <div className="order-display-container">
-            <h3 className="order-title">🛒 الطلب الحالي</h3>
+            <h3 className="order-title">🛒 طلبك الحالي</h3>
             <div className="order-table-wrapper">
                 <table className="order-table">
                     <thead>
@@ -22,57 +27,63 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
                             <th>العدد</th>
                             <th>اسم المنتج</th>
                             <th>السعر</th>
-                            <th>المكونات</th>
                             <th>الإجمالي</th>
                         </tr>
                     </thead>
                     <tbody>
-                        {orderItems.map((item, index) => (
-                            <tr key={index}>
-                                <td className="quantity">{item.quantity}</td>
-                                <td className="name">{item.name}</td>
-                                <td className="price">{item.price} ج</td>
-                                <td className="ingredients">{item.ingredients}</td>
-                                <td className="total">{(item.price * item.quantity).toFixed(2)} ج</td>
+                        {orderItems.length === 0 ? (
+                            <tr>
+                                <td colSpan={4} style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
+                                    لا توجد عناصر في الطلب بعد
+                                </td>
                             </tr>
-                        ))}
+                        ) : (
+                            orderItems.map((item, index) => (
+                                <tr key={index}>
+                                    <td className="quantity">{item.quantity}</td>
+                                    <td className="name">{item.name}</td>
+                                    <td className="price">{item.price} جنيه</td>
+                                    <td className="total">{(item.price * item.quantity)} جنيه</td>
+                                </tr>
+                            ))
+                        )}
                     </tbody>
-                    <tfoot>
-                        <tr className="total-row">
-                            <td colSpan={4}>
-                                <strong>الإجمالي</strong>
-                            </td>
-                            <td className="total-price">
-                                <strong>{totalPrice.toFixed(2)} ج</strong>
-                            </td>
-                        </tr>
-                    </tfoot>
+                    {orderItems.length > 0 && (
+                        <tfoot>
+                            <tr className="total-row">
+                                <td colSpan={3}>
+                                    <strong>الإجمالي الكلي</strong>
+                                </td>
+                                <td className="total-price">
+                                    <strong>{totalPrice} جنيه</strong>
+                                </td>
+                            </tr>
+                        </tfoot>
+                    )}
                 </table>
             </div>
 
             <style>{`
                 .order-display-container {
-                    position: fixed;
-                    top: 20px;
-                    right: 20px;
-                    max-width: 500px;
+                    width: 100%;
+                    max-width: 600px;
                     background: rgba(255, 255, 255, 0.95);
                     border-radius: 15px;
-                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.2);
+                    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
                     padding: 20px;
-                    z-index: 1000;
+                    margin: 20px auto;
                     backdrop-filter: blur(10px);
                     border: 2px solid #e2e8f0;
-                    animation: slideIn 0.3s ease-out;
+                    animation: slideDown 0.3s ease-out;
                 }
                 
-                @keyframes slideIn {
+                @keyframes slideDown {
                     from {
-                        transform: translateX(100%);
+                        transform: translateY(-20px);
                         opacity: 0;
                     }
                     to {
-                        transform: translateX(0);
+                        transform: translateY(0);
                         opacity: 1;
                     }
                 }
@@ -81,12 +92,13 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
                     color: #2d5aa0;
                     text-align: center;
                     margin-bottom: 15px;
-                    font-size: 1.2em;
+                    font-size: 1.4em;
                     font-weight: bold;
+                    text-shadow: 0 2px 4px rgba(0,0,0,0.1);
                 }
                 
                 .order-table-wrapper {
-                    max-height: 400px;
+                    max-height: 300px;
                     overflow-y: auto;
                     border-radius: 10px;
                     box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
@@ -96,7 +108,7 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
                     width: 100%;
                     border-collapse: collapse;
                     background: white;
-                    font-size: 0.9em;
+                    font-size: 1em;
                 }
                 
                 .order-table th {

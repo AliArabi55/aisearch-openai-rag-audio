@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Mic, MicOff } from "lucide-react";
 import { useTranslation } from "react-i18next";
 
@@ -26,36 +26,91 @@ function App() {
     // Order management state
     const [orderItems, setOrderItems] = useState<OrderItem[]>([]);
     const [totalPrice, setTotalPrice] = useState(0);
-    const [showOrder, setShowOrder] = useState(false);
+    const [showOrder, setShowOrder] = useState(true); // Always show order table
+
+    // Auto-disconnect timer (3 minutes = 180000 ms)
+    const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 3 minutes
+
+    // Auto-disconnect function
+    const disconnectCall = async () => {
+        if (isRecording) {
+            console.log("Auto-disconnecting due to inactivity...");
+            await stopAudioRecording();
+            stopAudioPlayer();
+            inputAudioBufferClear();
+            setIsRecording(false);
+        }
+    };
+
+    // Reset activity timer
+    const resetActivityTimer = () => {
+        if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+        }
+        if (isRecording) {
+            inactivityTimerRef.current = setTimeout(disconnectCall, INACTIVITY_TIMEOUT);
+        }
+    };
+
+    // Monitor inactivity
+    useEffect(() => {
+        if (isRecording) {
+            resetActivityTimer();
+        } else {
+            if (inactivityTimerRef.current) {
+                clearTimeout(inactivityTimerRef.current);
+                inactivityTimerRef.current = null;
+            }
+        }
+
+        return () => {
+            if (inactivityTimerRef.current) {
+                clearTimeout(inactivityTimerRef.current);
+            }
+        };
+    }, [isRecording]);
 
     const { startSession, addUserAudio, inputAudioBufferClear } = useRealTime({
-        onWebSocketOpen: () => console.log("WebSocket connection opened"),
+        onWebSocketOpen: () => {
+            console.log("WebSocket connection opened");
+            resetActivityTimer();
+        },
         onWebSocketClose: () => console.log("WebSocket connection closed"),
         onWebSocketError: event => console.error("WebSocket error:", event),
         onReceivedError: message => console.error("error", message),
         onReceivedResponseAudioDelta: message => {
             isRecording && playAudio(message.delta);
+            resetActivityTimer(); // Reset timer on AI response
         },
         onReceivedInputAudioBufferSpeechStarted: () => {
             console.log("Speech started detected");
             stopAudioPlayer();
+            resetActivityTimer(); // Reset timer on user speech
         },
         onReceivedExtensionMiddleTierToolResponse: message => {
+            resetActivityTimer(); // Reset timer on tool response
+            console.log("🔧 Tool Response Received:", message.tool_result);
             try {
                 const result: ToolResult = JSON.parse(message.tool_result);
+                console.log("📊 Parsed Tool Result:", result);
 
                 // Handle order management messages
                 if (result.action) {
+                    console.log("🎯 Action Detected:", result.action);
                     switch (result.action) {
                         case "order_updated":
                         case "show_order_summary":
                             if (result.order_summary) {
+                                console.log("📝 Order Summary:", result.order_summary);
                                 setOrderItems(result.order_summary.items);
                                 setTotalPrice(result.order_summary.total_price);
                                 setShowOrder(true);
+                                console.log("✅ Order state updated");
                             }
                             break;
                         case "order_confirmed":
+                            console.log("✅ Order confirmed, hiding after 5 seconds");
                             // Show confirmation and hide order after a delay
                             setTimeout(() => {
                                 setShowOrder(false);
@@ -64,6 +119,7 @@ function App() {
                             }, 5000);
                             break;
                         case "order_cleared":
+                            console.log("🗑️ Order cleared");
                             setShowOrder(false);
                             setOrderItems([]);
                             setTotalPrice(0);
@@ -131,6 +187,14 @@ function App() {
 
     const { t } = useTranslation();
 
+    // Debug: Log order state changes
+    useEffect(() => {
+        console.log("🛒 Order State Changed:");
+        console.log("  - showOrder:", showOrder);
+        console.log("  - orderItems:", orderItems);
+        console.log("  - totalPrice:", totalPrice);
+    }, [showOrder, orderItems, totalPrice]);
+
     return (
         <div className="flex min-h-screen flex-col bg-gray-100 text-gray-900">
             <div className="p-4 sm:absolute sm:left-4 sm:top-4">
@@ -140,6 +204,10 @@ function App() {
                 <h1 className="mb-8 bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-4xl font-bold text-transparent md:text-7xl">
                     {t("app.title")}
                 </h1>
+                
+                {/* Order Display - Show below title */}
+                <OrderDisplay orderItems={orderItems} totalPrice={totalPrice} isVisible={showOrder} />
+                
                 <div className="mb-4 flex flex-col items-center justify-center">
                     <Button
                         onClick={onToggleListening}
@@ -180,9 +248,6 @@ function App() {
             </footer>
 
             <GroundingFileView groundingFile={selectedFile} onClosed={() => setSelectedFile(null)} />
-
-            {/* Order Display */}
-            <OrderDisplay orderItems={orderItems} totalPrice={totalPrice} isVisible={showOrder} />
         </div>
     );
 }
