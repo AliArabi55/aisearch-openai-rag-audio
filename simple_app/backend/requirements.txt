@@ -1,6 +1,0 @@
-aiohttp
-azure-search-documents
-azure-core
-azure-identity
-python-dotenv
-websockets
