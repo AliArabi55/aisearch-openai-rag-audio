@@ -117,14 +117,19 @@ def register_order_tools(rtmt):
         try:
             user_message = args.get("user_message", "").lower().strip()
             
-            # كلمات الإنهاء
+            # كلمات الإنهاء المحدثة
             goodbye_words = [
-                "سلام", "مع السلامة", "إلى اللقاء", "إلي اللقاء", 
-                "باي", "goodbye", "bye", "سلامه", "اللقاء"
+                "سلام", "مع السلامة", "إلى اللقاء", "إلي اللقاء", "إلى للقاء",
+                "باي", "goodbye", "bye", "سلامه", "اللقاء", "وداع",
+                "خلاص", "كفاية", "انتهيت", "مش محتاج حاجة تاني",
+                "هو ده كل حاجة", "كده تمام", "اشوفك قريب", "ربنا معاكم"
             ]
+            
+            print(f"🔍 فحص كلمات الإنهاء في: '{user_message}'")
             
             for word in goodbye_words:
                 if word in user_message:
+                    print(f"✅ تم اكتشاف كلمة إنهاء: '{word}'")
                     # مسح الذاكرة المؤقتة عند الإنهاء
                     from ragtools import clear_cache
                     clear_cache()
@@ -133,8 +138,10 @@ def register_order_tools(rtmt):
                         "message": "شكراً لك! تم إنهاء المحادثة. نتطلع لخدمتك مرة أخرى.",
                         "should_disconnect": True
                     }
+                    print("🔚 إرسال أمر إنهاء المحادثة")
                     return ToolResult(json.dumps(result, ensure_ascii=False), ToolResultDirection.TO_CLIENT)
             
+            print("➡️ لا توجد كلمات إنهاء، المحادثة مستمرة")
             result = {
                 "action": "continue_conversation", 
                 "should_disconnect": False

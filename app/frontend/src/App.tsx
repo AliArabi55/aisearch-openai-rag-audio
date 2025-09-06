@@ -39,14 +39,33 @@ function App() {
 
     // Auto-disconnect function
     const disconnectCall = async () => {
+        console.log("Disconnecting call...");
+        
         if (isRecording) {
-            console.log("Auto-disconnecting due to inactivity...");
+            console.log("Stopping audio recording...");
             await stopAudioRecording();
             stopAudioPlayer();
             inputAudioBufferClear();
-            setIsRecording(false);
-            setRemainingTime(180); // Reset timer
         }
+        
+        // Reset all states
+        setIsRecording(false);
+        setIsPlayingSequence(false);
+        setShowGoodbyeMessage(false);
+        setRemainingTime(180); // Reset timer
+        
+        // Clear timers
+        if (inactivityTimerRef.current) {
+            clearTimeout(inactivityTimerRef.current);
+            inactivityTimerRef.current = null;
+        }
+        
+        if (countdownTimerRef.current) {
+            clearInterval(countdownTimerRef.current);
+            countdownTimerRef.current = null;
+        }
+        
+        console.log("✅ Call disconnected and all states reset");
     };
 
     // 🆕 Start countdown timer
@@ -163,9 +182,10 @@ function App() {
                         case "end_conversation":
                             console.log("👋 User said goodbye, ending conversation");
                             setShowGoodbyeMessage(true);
+                            
+                            // إنهاء المكالمة بعد عرض الرسالة لثانيتين
                             setTimeout(async () => {
                                 await disconnectCall();
-                                setShowGoodbyeMessage(false);
                             }, 2000);
                             break;
                     }
