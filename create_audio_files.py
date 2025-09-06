@@ -66,8 +66,8 @@ audio_dir = r"c:\Users\aliar\OneDrive\Documents\GitHub\aisearch-openai-rag-audio
 
 print("🎵 إنشاء الملفات الصوتية...")
 
-# 1. Ran.mp3 - رنة البداية (3 ثوانٍ)
-print("🔔 إنشاء Ran.mp3...")
+# 1. Ran.wav - رنة البداية (3 ثوانٍ)
+print("🔔 إنشاء Ran.wav...")
 create_audio_file(os.path.join(audio_dir, "Ran.wav"), 3.0, 880)  # A5 نوتة
 
 # 2. between.wav - صوت انتقال (1 ثانية)
