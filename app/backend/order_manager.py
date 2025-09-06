@@ -15,7 +15,7 @@ class OrderItem:
     """عنصر في الطلب"""
     id: str
     name: str
-    price: float
+    price: float  # إعادة إلى float للطلبات
     ingredients: str
     quantity: int = 1
     
@@ -177,7 +177,7 @@ class OrderManager:
         return True, confirmation_text, confirmed_order
     
     def _extract_price(self, price_str: str) -> float:
-        """استخراج السعر من النص"""
+        """استخراج السعر من النص للطلبات"""
         if isinstance(price_str, (int, float)):
             return float(price_str)
         
@@ -270,7 +270,7 @@ def add_to_current_order(item_id: str, name: str, price: float, quantity: int = 
         item_data = {
             'ID': item_id,
             'Name': name,
-            'Price': str(price),
+            'Price': str(price),  # تحويل إلى نص للعرض فقط
             'ingredients': '',  # يمكن إضافتها لاحقاً
             'quantity': quantity
         }

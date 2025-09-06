@@ -252,6 +252,9 @@ async def _search_tool(
             name_value = r.get("Name", "بدون اسم")
             content_field_value = r.get(content_field, "بدون وصف")
             price_value = r.get("Price", "غير محدد")
+            # التأكد من أن السعر نص للموديل
+            if isinstance(price_value, (int, float)):
+                price_value = str(price_value)
             search_score = r.get("@search.score", 0)
             reranker_score = r.get("@search.reranker_score", None)
             
@@ -304,6 +307,11 @@ async def _search_tool(
         print(f"{'='*50}")
         print(result_text[:300] + "..." if len(result_text) > 300 else result_text)
         print(f"{'='*50}")
+        
+        # 📤 تتبع إرسال النتائج للموديل Real-time
+        print(f"📤 إرسال النتائج لموديل AZURE_OPENAI_REALTIME_DEPLOYMENT=gpt-4o-mini-realtime-preview")
+        print(f"   📊 عدد العناصر المُرسلة: {len(docs)}")
+        print(f"   📝 حجم النص المُرسل: {len(result_text)} حرف")
         
         return ToolResult(result_text, ToolResultDirection.TO_CLIENT)
         
@@ -401,6 +409,9 @@ async def _show_all_tool(search_client: SearchClient, identifier_field: str, con
             name_value = r.get("Name", "بدون اسم")
             content_field_value = r.get(content_field, "بدون وصف")
             price_value = r.get("Price", "غير محدد")
+            # التأكد من أن السعر نص للموديل في show_all
+            if isinstance(price_value, (int, float)):
+                price_value = str(price_value)
             
             docs.append({
                 'ID': identifier_value,

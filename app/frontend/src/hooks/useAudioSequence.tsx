@@ -5,111 +5,114 @@ interface UseAudioSequenceProps {
 }
 
 const useAudioSequence = ({ onSequenceComplete }: UseAudioSequenceProps) => {
+    
+    const playAudioFile = async (src: string, name: string, timeoutMs: number = 10000): Promise<void> => {
+        return new Promise((resolve) => {
+            console.log(`🎧 بدء تحميل ${name} من ${src}`);
+            
+            const audio = new Audio(src);
+            audio.preload = 'auto';
+            audio.volume = 1.0; // تأكد من مستوى الصوت
+            
+            let resolved = false;
+            
+            const resolveOnce = (success: boolean = true, message: string = '') => {
+                if (!resolved) {
+                    resolved = true;
+                    if (success) {
+                        console.log(`✅ نجح ${name}`);
+                        resolve();
+                    } else {
+                        console.error(`❌ فشل ${name}: ${message}`);
+                        resolve(); // نستمر حتى لو فشل
+                    }
+                }
+            };
+
+            // عند انتهاء التشغيل
+            audio.onended = () => {
+                console.log(`🎉 انتهى تشغيل ${name} بنجاح`);
+                resolveOnce(true);
+            };
+
+            // عند حدوث خطأ
+            audio.onerror = (e) => {
+                const errorMsg = `خطأ في تحميل أو تشغيل ${name}`;
+                console.error(`❌ ${errorMsg}:`, e);
+                resolveOnce(false, errorMsg);
+            };
+
+            // عند جاهزية الملف للتشغيل
+            audio.oncanplaythrough = () => {
+                console.log(`🎵 ${name} جاهز للتشغيل، بدء التشغيل...`);
+                
+                audio.play()
+                    .then(() => {
+                        console.log(`🔊 بدء تشغيل ${name} بنجاح`);
+                    })
+                    .catch((playError) => {
+                        const errorMsg = `فشل في تشغيل ${name}: ${playError.message}`;
+                        console.error(`❌ ${errorMsg}`);
+                        resolveOnce(false, errorMsg);
+                    });
+            };
+
+            // مهلة زمنية للحماية من التعليق
+            setTimeout(() => {
+                const timeoutMsg = `انتهت مهلة ${name} (${timeoutMs}ms)`;
+                console.warn(`⏰ ${timeoutMsg}`);
+                resolveOnce(false, timeoutMsg);
+            }, timeoutMs);
+        });
+    };
+    
     const playAudioSequence = useCallback(async () => {
         try {
-            console.log("🎵 Starting audio sequence...");
+            console.log("🚀 بدء تسلسل الأصوات الثلاثة...");
+            
+            // اختبار أولي لفتح سياق الصوت
+            try {
+                console.log("🔓 فتح سياق الصوت...");
+                const testAudio = new Audio("data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1fdJivrJBhNjVgodDbq2EcBj+a2/LDciUFLIHO8tiJNwgZaLvt559NEAxQp+PwtmMcBjiR1/LMeSwFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAoUXrTp66hVFApGn+DyvmMcAjaL2e7MeSsFJHfH8N2QQAo");
+                testAudio.volume = 0.01;
+                await testAudio.play();
+                console.log("✅ تم فتح سياق الصوت بنجاح");
+            } catch (e) {
+                console.log("🔇 لم يتم فتح سياق الصوت، المتابعة...");
+            }
 
-            // 1. تشغيل Ran.mp3 (الرنة)
-            console.log("🔊 Playing Ran.mp3...");
-            const ranAudio = new Audio("/audio/Ran.mp3");
-
-            await new Promise<void>((resolve) => {
-                ranAudio.onended = () => {
-                    console.log("✅ Ran.mp3 ended");
-                    resolve();
-                };
-                ranAudio.onerror = error => {
-                    console.warn("⚠️ Error playing Ran.mp3, skipping:", error);
-                    resolve(); // Continue even if audio fails
-                };
-                ranAudio.oncanplaythrough = () => {
-                    ranAudio.play().catch(err => {
-                        console.warn("⚠️ Failed to play Ran.mp3, skipping:", err);
-                        resolve();
-                    });
-                };
-                
-                // Fallback timeout
-                setTimeout(() => {
-                    console.log("⏰ Ran.mp3 timeout, continuing...");
-                    resolve();
-                }, 3000);
-            });
-
-            // 2. انتظار قصير قبل تشغيل between.wav
-            console.log("⏳ Waiting before between.wav...");
+            // 1. تشغيل Ran.wav (الرنة الأولى)
+            console.log("🔔 الخطوة 1: تشغيل Ran.wav...");
+            await playAudioFile("/audio/Ran.wav", "Ran.wav", 8000);
+            
+            // 2. انتظار قصير
+            console.log("⏳ الخطوة 2: انتظار 500ms...");
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // 3. تشغيل between.wav
-            console.log("🔊 Playing between.wav...");
-            const betweenAudio = new Audio("/audio/between.wav");
-
-            await new Promise<void>((resolve) => {
-                betweenAudio.onended = () => {
-                    console.log("✅ between.wav ended");
-                    resolve();
-                };
-                betweenAudio.onerror = error => {
-                    console.warn("⚠️ Error playing between.wav, skipping:", error);
-                    resolve(); // Continue even if audio fails
-                };
-                betweenAudio.oncanplaythrough = () => {
-                    betweenAudio.play().catch(err => {
-                        console.warn("⚠️ Failed to play between.wav, skipping:", err);
-                        resolve();
-                    });
-                };
-                
-                // Fallback timeout
-                setTimeout(() => {
-                    console.log("⏰ between.wav timeout, continuing...");
-                    resolve();
-                }, 3000);
-            });
-
-            // 4. انتظار قصير قبل تشغيل Nancy.wav
-            console.log("⏳ Waiting before Nancy.wav...");
+            // 3. تشغيل between.wav (صوت الانتقال)
+            console.log("⚡ الخطوة 3: تشغيل between.wav...");
+            await playAudioFile("/audio/between.wav", "between.wav", 5000);
+            
+            // 4. انتظار قصير
+            console.log("⏳ الخطوة 4: انتظار 500ms...");
             await new Promise(resolve => setTimeout(resolve, 500));
 
-            // 5. تشغيل Nancy.wav
-            console.log("🔊 Playing Nancy.wav...");
-            const nancyAudio = new Audio("/audio/Nancy.wav");
+            // 5. تشغيل Nancy.wav (صوت الترحيب)
+            console.log("🎤 الخطوة 5: تشغيل Nancy.wav...");
+            await playAudioFile("/audio/Nancy.wav", "Nancy.wav", 6000);
 
-            await new Promise<void>((resolve) => {
-                nancyAudio.onended = () => {
-                    console.log("✅ Nancy.wav ended");
-                    resolve();
-                };
-                nancyAudio.onerror = error => {
-                    console.warn("⚠️ Error playing Nancy.wav, skipping:", error);
-                    resolve(); // Continue even if audio fails
-                };
-                nancyAudio.oncanplaythrough = () => {
-                    nancyAudio.play().catch(err => {
-                        console.warn("⚠️ Failed to play Nancy.wav, skipping:", err);
-                        resolve();
-                    });
-                };
-                
-                // Fallback timeout
-                setTimeout(() => {
-                    console.log("⏰ Nancy.wav timeout, continuing...");
-                    resolve();
-                }, 3000);
-            });
+            // 6. انتظار نهائي قبل تفعيل Real-time
+            console.log("⏳ الخطوة 6: انتظار نهائي 1000ms...");
+            await new Promise(resolve => setTimeout(resolve, 1000));
 
-            // 6. انتظار قصير قبل تمكين الـ Realtime
-            console.log("Waiting before enabling Realtime...");
-            await new Promise(resolve => setTimeout(resolve, 500));
-
-            // 7. استدعاء الدالة للإشارة إلى انتهاء التسلسل
-            console.log("Audio sequence completed, calling onSequenceComplete");
+            // 7. إشارة انتهاء التسلسل
+            console.log("🎉 انتهى تسلسل الأصوات بنجاح، تفعيل Real-time...");
             onSequenceComplete();
+            
         } catch (error) {
-            console.error("Error playing audio sequence:", error);
-            // في حالة حدوث خطأ، مازلنا نريد تمكين الـ Realtime
-            console.error("Audio sequence failed, calling onSequenceComplete anyway");
-            onSequenceComplete();
+            console.error("❌ خطأ في تسلسل الأصوات:", error);
+            console.error("🔄 المتابعة مع تفعيل Real-time رغم الخطأ...");
+            onSequenceComplete(); // استمرار رغم الخطأ
         }
     }, [onSequenceComplete]);
 
