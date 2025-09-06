@@ -1,13 +1,13 @@
 {
     "app": {
-        "title": "Order your food now from Circles Restaurant",
+        "title": "Order your meal now",
         "footer": "Built by Naslst Team",
         "stopRecording": "Stop recording",
         "startRecording": "Start recording",
         "stopConversation": "Stop conversation"
     },
     "status": {
-        "notRecordingMessage": "Order your food now from Circles Restaurant",
+        "notRecordingMessage": "Order your meal now",
         "conversationInProgress": "Conversation in progress"
     },
     "history": {

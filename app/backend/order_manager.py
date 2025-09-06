@@ -208,7 +208,7 @@ class OrderManager:
         table_html = """
         <div style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); border-radius: 20px; box-shadow: 0 10px 30px rgba(0,0,0,0.3); margin: 20px; padding: 25px; font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;">
             <div style="text-align: center; margin-bottom: 25px; padding-bottom: 20px; border-bottom: 2px solid rgba(255,255,255,0.3);">
-                <h2 style="color: white; margin: 0; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🍽️ Order your food now from Circles Restaurant</h2>
+                <h2 style="color: white; margin: 0; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0,0,0,0.3);">🍽️ Order your meal now</h2>
                 <p style="color: rgba(255,255,255,0.9); margin: 10px 0 0 0; font-size: 16px;">استمتع بأشهى الأطباق من مطعم سيركلز</p>
             </div>
             <div style="background: white; border-radius: 15px; overflow: hidden; box-shadow: 0 5px 15px rgba(0,0,0,0.2);">
