@@ -21,10 +21,11 @@ export type OrderSummary = {
 };
 
 export type OrderToolResult = {
-    action: "order_updated" | "show_order_summary" | "order_confirmed" | "order_cleared";
+    action: "order_updated" | "show_order_summary" | "order_confirmed" | "order_cleared" | "end_conversation" | "continue_conversation";
     message?: string;
     order_summary?: OrderSummary;
     order_table?: string;
+    should_disconnect?: boolean;
 };
 
 export type HistoryItem = {

@@ -28,8 +28,13 @@ function App() {
     const [totalPrice, setTotalPrice] = useState(0);
     const [showOrder, setShowOrder] = useState(true); // Always show order table
 
+    // 🆕 Timer state for countdown
+    const [remainingTime, setRemainingTime] = useState(180); // 3 minutes = 180 seconds
+    const [showGoodbyeMessage, setShowGoodbyeMessage] = useState(false);
+
     // Auto-disconnect timer (3 minutes = 180000 ms)
     const inactivityTimerRef = useRef<NodeJS.Timeout | null>(null);
+    const countdownTimerRef = useRef<NodeJS.Timeout | null>(null);
     const INACTIVITY_TIMEOUT = 3 * 60 * 1000; // 3 minutes
 
     // Auto-disconnect function
@@ -40,7 +45,33 @@ function App() {
             stopAudioPlayer();
             inputAudioBufferClear();
             setIsRecording(false);
+            setRemainingTime(180); // Reset timer
         }
+    };
+
+    // 🆕 Start countdown timer
+    const startCountdownTimer = () => {
+        setRemainingTime(180); // Reset to 3 minutes
+        
+        countdownTimerRef.current = setInterval(() => {
+            setRemainingTime(prev => {
+                if (prev <= 1) {
+                    // Time's up - disconnect
+                    disconnectCall();
+                    return 180;
+                }
+                return prev - 1;
+            });
+        }, 1000);
+    };
+
+    // 🆕 Stop countdown timer
+    const stopCountdownTimer = () => {
+        if (countdownTimerRef.current) {
+            clearInterval(countdownTimerRef.current);
+            countdownTimerRef.current = null;
+        }
+        setRemainingTime(180); // Reset timer
     };
 
     // Reset activity timer
@@ -53,20 +84,25 @@ function App() {
         }
     };
 
-    // Monitor inactivity
+    // Monitor inactivity and countdown
     useEffect(() => {
         if (isRecording) {
             resetActivityTimer();
+            startCountdownTimer(); // Start countdown when recording starts
         } else {
             if (inactivityTimerRef.current) {
                 clearTimeout(inactivityTimerRef.current);
                 inactivityTimerRef.current = null;
             }
+            stopCountdownTimer(); // Stop countdown when recording stops
         }
 
         return () => {
             if (inactivityTimerRef.current) {
                 clearTimeout(inactivityTimerRef.current);
+            }
+            if (countdownTimerRef.current) {
+                clearInterval(countdownTimerRef.current);
             }
         };
     }, [isRecording]);
@@ -123,6 +159,14 @@ function App() {
                             setShowOrder(false);
                             setOrderItems([]);
                             setTotalPrice(0);
+                            break;
+                        case "end_conversation":
+                            console.log("👋 User said goodbye, ending conversation");
+                            setShowGoodbyeMessage(true);
+                            setTimeout(async () => {
+                                await disconnectCall();
+                                setShowGoodbyeMessage(false);
+                            }, 2000);
                             break;
                     }
                 }
@@ -238,7 +282,12 @@ function App() {
                             </>
                         )}
                     </Button>
-                    <StatusMessage isRecording={isRecording} isPlayingSequence={isPlayingSequence} />
+                    <StatusMessage 
+                        isRecording={isRecording} 
+                        isPlayingSequence={isPlayingSequence} 
+                        remainingTime={remainingTime}
+                        showGoodbyeMessage={showGoodbyeMessage}
+                    />
                 </div>
                 <GroundingFiles files={groundingFiles} onSelected={setSelectedFile} />
             </main>

@@ -261,3 +261,120 @@ class OrderManager:
 
 # Global order manager instance
 order_manager = OrderManager()
+
+# 🆕 Helper functions for ragtools integration
+def add_to_current_order(item_id: str, name: str, price: float, quantity: int = 1) -> dict:
+    """إضافة عنصر للطلب الحالي وإرجاع الملخص"""
+    try:
+        # تحضير بيانات العنصر
+        item_data = {
+            'ID': item_id,
+            'Name': name,
+            'Price': str(price),
+            'ingredients': '',  # يمكن إضافتها لاحقاً
+            'quantity': quantity
+        }
+        
+        success, message = order_manager.add_item(item_data)
+        
+        if success:
+            # إرجاع ملخص الطلب المحدث
+            return get_current_order_summary()
+        else:
+            return {
+                "action": "order_error",
+                "message": f"فشل في إضافة {name}: {message}"
+            }
+    except Exception as e:
+        return {
+            "action": "order_error", 
+            "message": f"خطأ في إضافة العنصر: {e}"
+        }
+
+def get_current_order_summary() -> dict:
+    """الحصول على ملخص الطلب الحالي"""
+    try:
+        if order_manager.is_empty():
+            return {
+                "action": "order_updated",
+                "order_summary": {
+                    "items": [],
+                    "total_price": 0,
+                    "item_count": 0
+                }
+            }
+        
+        # تحضير قائمة العناصر
+        items = []
+        for item in order_manager.current_order:
+            items.append({
+                "id": item.id,
+                "name": item.name,
+                "price": item.price,
+                "quantity": item.quantity,
+                "total": item.get_total_price()
+            })
+        
+        return {
+            "action": "order_updated",
+            "order_summary": {
+                "items": items,
+                "total_price": order_manager.get_total_price(),
+                "item_count": len(order_manager.current_order)
+            }
+        }
+    except Exception as e:
+        return {
+            "action": "order_error",
+            "message": f"خطأ في جلب ملخص الطلب: {e}"
+        }
+
+def confirm_current_order() -> dict:
+    """تأكيد الطلب الحالي"""
+    try:
+        if order_manager.is_empty():
+            return {
+                "action": "order_error",
+                "message": "لا يوجد عناصر في الطلب للتأكيد"
+            }
+        
+        # حفظ الطلب وإرجاع رسالة التأكيد
+        total_price = order_manager.get_total_price()
+        item_count = len(order_manager.current_order)
+        
+        # مسح الطلب الحالي (simulate confirmation)
+        order_manager.current_order.clear()
+        
+        return {
+            "action": "order_confirmed",
+            "message": f"تم تأكيد طلبك بنجاح! الإجمالي: {total_price:.0f} جنيه ({item_count} عناصر)",
+            "order_summary": {
+                "items": [],
+                "total_price": 0,
+                "item_count": 0
+            }
+        }
+    except Exception as e:
+        return {
+            "action": "order_error",
+            "message": f"خطأ في تأكيد الطلب: {e}"
+        }
+
+def clear_current_order() -> dict:
+    """مسح الطلب الحالي"""
+    try:
+        order_manager.current_order.clear()
+        return {
+            "action": "order_cleared", 
+            "message": "تم مسح الطلب",
+            "order_summary": {
+                "items": [],
+                "total_price": 0,
+                "item_count": 0
+            }
+        }
+    except Exception as e:
+        return {
+            "action": "order_error",
+            "message": f"خطأ في مسح الطلب: {e}"
+        }
