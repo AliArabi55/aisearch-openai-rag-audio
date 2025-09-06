@@ -19,22 +19,22 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
 
     return (
         <div className="order-display-container">
-            <h3 className="order-title">🛒 طلبك الحالي</h3>
+            <h3 className="order-title">🛒 Your Current Order</h3>
             <div className="order-table-wrapper">
                 <table className="order-table">
                     <thead>
                         <tr>
-                            <th>العدد</th>
-                            <th>اسم المنتج</th>
-                            <th>السعر</th>
-                            <th>الإجمالي</th>
+                            <th>Quantity</th>
+                            <th>Product Name</th>
+                            <th>Price</th>
+                            <th>Total</th>
                         </tr>
                     </thead>
                     <tbody>
                         {orderItems.length === 0 ? (
                             <tr>
                                 <td colSpan={4} style={{ textAlign: 'center', padding: '20px', color: '#64748b' }}>
-                                    لا توجد عناصر في الطلب بعد
+                                    No items in order yet
                                 </td>
                             </tr>
                         ) : (
@@ -42,8 +42,8 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
                                 <tr key={index}>
                                     <td className="quantity">{item.quantity}</td>
                                     <td className="name">{item.name}</td>
-                                    <td className="price">{item.price} جنيه</td>
-                                    <td className="total">{(item.price * item.quantity)} جنيه</td>
+                                    <td className="price">{item.price} EGP</td>
+                                    <td className="total">{(item.price * item.quantity)} EGP</td>
                                 </tr>
                             ))
                         )}
@@ -52,10 +52,10 @@ const OrderDisplay: React.FC<OrderDisplayProps> = ({ orderItems, totalPrice, isV
                         <tfoot>
                             <tr className="total-row">
                                 <td colSpan={3}>
-                                    <strong>الإجمالي الكلي</strong>
+                                    <strong>Total Amount</strong>
                                 </td>
                                 <td className="total-price">
-                                    <strong>{totalPrice} جنيه</strong>
+                                    <strong>{totalPrice} EGP</strong>
                                 </td>
                             </tr>
                         </tfoot>
