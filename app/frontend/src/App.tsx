@@ -317,9 +317,6 @@ function App() {
             </footer>
 
             <GroundingFileView groundingFile={selectedFile} onClosed={() => setSelectedFile(null)} />
-
-            {/* Order Display */}
-            <OrderDisplay orderItems={orderItems} totalPrice={totalPrice} isVisible={showOrder} />
         </div>
     );
 }

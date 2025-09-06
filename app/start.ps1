@@ -10,10 +10,10 @@ Write-Host "📦 تفعيل البيئة الافتراضية..." -ForegroundCol
 Set-Location "$PSScriptRoot\backend"
 
 # تحديد المنفذ
-$env:PORT = "8765"
+$env:PORT = "8766"
 
-Write-Host "🌐 تشغيل التطبيق على المنفذ 8765..." -ForegroundColor Green
-Write-Host "🔗 الرابط: http://localhost:8765" -ForegroundColor Cyan
+Write-Host "🌐 تشغيل التطبيق على المنفذ 8766..." -ForegroundColor Green
+Write-Host "🔗 الرابط: http://localhost:8766" -ForegroundColor Cyan
 
 # تشغيل التطبيق
 & python app.py
