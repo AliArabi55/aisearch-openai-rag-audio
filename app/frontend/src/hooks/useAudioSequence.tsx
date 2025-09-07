@@ -81,9 +81,9 @@ const useAudioSequence = ({ onSequenceComplete }: UseAudioSequenceProps) => {
                 console.log("🔇 لم يتم فتح سياق الصوت، المتابعة...");
             }
 
-            // 1. تشغيل Ran.wav (الرنة الأولى)
-            console.log("🔔 الخطوة 1: تشغيل Ran.wav...");
-            await playAudioFile("/audio/Ran.wav", "Ran.wav", 8000);
+            // 1. تشغيل Ran.mp3 (الرنة الأولى)
+            console.log("🔔 الخطوة 1: تشغيل Ran.mp3...");
+            await playAudioFile("/audio/Ran.mp3", "Ran.mp3", 8000);
             
             // 2. انتظار قصير
             console.log("⏳ الخطوة 2: انتظار 500ms...");
